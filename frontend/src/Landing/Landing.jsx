@@ -13,9 +13,9 @@ export default function Landing() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
-              <h1>ENO-OBONG MEMORIAL MEDICAL SERVICES</h1>
+              <h1 className='hospitalname'>ENO-OBONG MEMORIAL MEDICAL SERVICES</h1>
               <p>Committed to Service Excellence</p>
-              <Link to="#features">Learn More</Link>
+              <a href="#features">Learn More</a>
             </div>
         </section>
 

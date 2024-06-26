@@ -39,16 +39,24 @@ body, html {
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.hero-content h1{
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
 }
 
-.hero-content p,
+.hospitalname{
+  font-size: 5rem;
+}
+
 .hero-content a{
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
   color: white;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: x-small;
+  transition: all 0.5s ease;
+}
+
+.hero-content a:hover{
+  color: rgba(255, 255, 255, 0.622);
+  transform: scale(1.5);
 }
 
 .feature {
