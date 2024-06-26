@@ -1,0 +1,50 @@
+body{
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+}
+
+.logincontainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.entry{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px ;
+}
+
+.welcomestuff{
+    width: 40%;
+}
+
+.welcomestuff h1{
+    font-size: 4.6rem;
+    margin-bottom: 5px;
+}
+
+.socialmediaicons{
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.authenticationstuff{
+    width: 30%
+}
+
+.authenticationstuff h2{
+    text-align: center;
+}
+
+.authenticationstuff p,
+.authenticationstuff label{
+    font-size:x-small;
+}
+
+button:hover{
+    cursor: pointer;
+}
