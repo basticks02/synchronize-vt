@@ -17,11 +17,11 @@ body{
     margin-bottom: 15px ;
 }
 
-.welcomestuff{
+.welcomecontainer{
     width: 40%;
 }
 
-.welcomestuff h1{
+.welcomecontainer h1{
     font-size: 4.6rem;
     margin-bottom: 5px;
 }
@@ -32,16 +32,16 @@ body{
     justify-content: space-between;
 }
 
-.authenticationstuff{
+.authenticationcontainer{
     width: 30%
 }
 
-.authenticationstuff h2{
+.authenticationcontainer h2{
     text-align: center;
 }
 
-.authenticationstuff p,
-.authenticationstuff label{
+.authenticationcontainer p,
+.authenticationcontainer label{
     font-size:x-small;
 }
 
