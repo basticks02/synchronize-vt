@@ -1,9 +1,10 @@
-body, html {
+/* body, html {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-}
+  width: 100%;
+} */
 
 .hero {
   position: relative;
@@ -43,7 +44,7 @@ body, html {
 }
 
 .hospitalname{
-  font-size: 5rem;
+  font-size: 50px;
 }
 
 .hero-content a{
@@ -67,6 +68,7 @@ footer {
   text-align: center;
   padding: 1rem;
   background-color: #f8f9fa;
+  width: 100%;
 }
 
 .hero .container {
@@ -91,4 +93,9 @@ footer {
 
 .feature .fa {
   margin-bottom: 1rem;
+}
+
+
+@media (max-width: 600px) {
+
 }

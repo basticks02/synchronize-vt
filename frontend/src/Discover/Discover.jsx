@@ -1,4 +1,4 @@
-import './Locate.css'
+import './Discover.css'
 import React from 'react'
 import Navbar from '../Navbar/Navbar'
 
@@ -13,7 +13,7 @@ export default function Locate() {
                     <source src="../images/hero.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-content">
-                    <h1>FIND YOUR WAY</h1>
+                    <h1>DISCOVER</h1>
                 </div>
             </section>
         </main>

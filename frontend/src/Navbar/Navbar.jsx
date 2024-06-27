@@ -10,8 +10,7 @@ export default function Navbar() {
             <Link to="/">Home</Link>
             <Link to="/myprofile">My Profile</Link>
             <Link to="/patients">Patients</Link>
-            <Link to="/locate">Locate</Link>
-            <Link to="/covid">COVID-19</Link>
+            <Link to="/discover">Discover</Link>
         </nav>
     </>
   )
