@@ -1,15 +1,11 @@
 import './Landing.css'
+import { Link } from 'react-router-dom'
+import Navbar from '../Navbar/Navbar'
 
 export default function Landing() {
   return (
     <>
-      <nav className='navbar'>
-        <a href="/login">Login</a>
-        <a href="/">Home</a>
-        <a href="/">My Profile</a>
-        <a href="/">Locate</a>
-        <a href="/">COVID-19</a>
-      </nav>
+      <Navbar/>
 
       <main>
         <section className="hero">
@@ -17,7 +13,7 @@ export default function Landing() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
-              <h1>ENO-OBONG MEMORIAL MEDICAL SERVICES</h1>
+              <h1 className='hospitalname'>ENO-OBONG MEMORIAL MEDICAL SERVICES</h1>
               <p>Committed to Service Excellence</p>
               <a href="#features">Learn More</a>
             </div>
@@ -25,7 +21,7 @@ export default function Landing() {
 
 
         {/* TODO: Populate with real info */}
-        <section id="features" className="feature text-center">
+        <section id="features" className="feature ">
             <div className="container">
               <h2>The Vision</h2>
               <div className="row">
