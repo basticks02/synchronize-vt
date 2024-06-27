@@ -4,6 +4,7 @@ import Login from '../Login/Login'
 import MyProfile from '../MyProfile/MyProfile'
 import Patients from '../Patients/Patients'
 import Discover from '../Discover/Discover'
+import Signup from '../Login/Signup'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/myprofile" element={<MyProfile />} />
         <Route path="/patients" element={<Patients />} />
         <Route path="/discover" element={<Discover />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>
   )

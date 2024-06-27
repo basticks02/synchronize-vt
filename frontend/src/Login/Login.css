@@ -48,3 +48,24 @@ body{
 button:hover{
     cursor: pointer;
 }
+
+.role,
+.signupbutton{
+    text-align: center;
+}
+
+@media (max-width: 1000px) {
+    .logincontainer{
+        flex-direction: column;
+    }
+
+    .welcomecontainer{
+        width: 60%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .socialmediaicons{
+        text-align: center;
+    }
+}
