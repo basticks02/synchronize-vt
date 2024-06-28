@@ -8,7 +8,7 @@ export default function Landing() {
       <Navbar/>
 
       <main>
-        <section className="hero">
+        <div className="hero">
             <video className="video-background" autoPlay loop muted>
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
@@ -17,7 +17,7 @@ export default function Landing() {
               <p>Committed to Service Excellence</p>
               <a href="#features">Learn More</a>
             </div>
-        </section>
+        </div>
 
 
         {/* TODO: Populate with real info */}

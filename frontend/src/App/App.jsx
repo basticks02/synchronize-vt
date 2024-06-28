@@ -9,12 +9,10 @@ import './App.css'
 import {UserContext} from '../UserContext'
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
+import api from '../api'
 
 export default function App() {
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [user, setUser] = useState(null)
 
   const updateUser = (newUser) => {
     setUser(newUser);
@@ -22,16 +20,27 @@ export default function App() {
 
   // Save the user data to storage whenever the user state changes
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user));
-  }, [user]);
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await api.get('/api/user/current', { withCredentials: true });
+        updateUser(response.data.user);
+      } catch (error) {
+        console.error('Failed to fetch current user', error);
+      }
+    };
+    fetchCurrentUser();
+
+  }, []);
 
 
   return (
     <>
-      <UserContext.Provider value={{ user, updateUser }}></UserContext.Provider>
+      <UserContext.Provider value={{ user, updateUser }}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
+
+            {/* <Route path="/" element={<Landing />} />  N/B: To confirm that User is still logged in after page refresh */}
+            <Route path="/" element={user ? <Landing /> : <Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/myprofile" element={<MyProfile />} />
             <Route path="/patients" element={<Patients />} />
@@ -39,6 +48,7 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
           </Routes>
         </BrowserRouter>
+      </UserContext.Provider>
     </>
   )
 }
