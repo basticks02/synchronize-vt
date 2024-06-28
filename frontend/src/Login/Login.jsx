@@ -1,7 +1,23 @@
 import './Login.css'
+import React, {useState, useContext} from 'react'
 import { Link } from 'react-router-dom'
+import { UserContext } from '../UserContext'
+
 
 export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  //submission Logic
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (username && password) {
+      // TODO: take this to the DB
+      console.log('Form Data', {username, password})
+    } else{
+      alert("Please fill out all fields")
+    }
+  }
 
   return (
     <>
@@ -20,15 +36,28 @@ export default function Login() {
 
         <div className='authenticationcontainer'>
           <h2>Sign in</h2>
-          <form>
+          <form className='loginform' onSubmit={handleLogin}>
+
             <div className='entry'>
-              <label htmlFor="Email Address">Email Address</label>
-              <input type="email" />
+              <label htmlFor="Username">Username</label>
+              <input
+                type="text"
+                id='username'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required/>
             </div>
+
             <div className='entry'>
               <label htmlFor="Password">Password</label>
-              <input type="password" />
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e)=> setPassword(e.target.value)}
+                required />
             </div>
+
             <button type='submit'>Sign In</button>
           </form>
             <p>Don't have an account? <Link to="/signup">Sign Up</Link> </p>
