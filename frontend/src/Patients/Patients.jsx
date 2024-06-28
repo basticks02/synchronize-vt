@@ -8,7 +8,7 @@ export default function Patients() {
         <Navbar />
 
         <main>
-            <section className="covidhero">
+            <section className="myprofilehero">
                 <video className="video-background" autoPlay loop muted>
                     <source src="../images/hero.mp4" type="video/mp4" />
                 </video>
