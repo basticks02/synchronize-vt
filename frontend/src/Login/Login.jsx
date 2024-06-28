@@ -25,7 +25,7 @@ export default function Login() {
 
         <div className='welcomecontainer'>
           <h1>Welcome Back</h1>
-          <p>Commited to serivce excellence</p>
+          <p>Commited to service excellence</p>
           <div className='socialmediaicons'>
               <i className="fa-brands fa-facebook"></i>
               <i className="fa-brands fa-twitter"></i>

@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {UserContext} from '../UserContext'
+import api from '../api'
 
 
 export default function Signup() {
@@ -8,8 +9,9 @@ export default function Signup() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [role, setRole] = useState('')
+    const navigate = useNavigate()
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
         const data = {
             username,
@@ -18,8 +20,12 @@ export default function Signup() {
             role
         }
         if (Object.values(data).every(field=>field)) {
-          // TODO: take this to the DB
-          console.log('Form Data', data)
+          try{
+            const response = await api.post('api/user/signup', data)
+            navigate('/login')
+          } catch (error) {
+            console.error('Error signing up.', error.response ? error.response.data : error.message)
+          }
         } else{
           alert("Please fill out all fields")
         }
@@ -29,7 +35,7 @@ export default function Signup() {
     <div className='logincontainer'>
         <div className='welcomecontainer'>
           <h1>Welcome!</h1>
-          <p>Commited to serivce excellence</p>
+          <p>Commited to service excellence</p>
           <div className='socialmediaicons'>
               <i className="fa-brands fa-facebook"></i>
               <i className="fa-brands fa-twitter"></i>
