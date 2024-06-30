@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
 
     jwt.verify(token, SECRET_KEY, (err, user) => {
       if (err) {
-        return res.sendStatus(403); 
+        return res.sendStatus(403);
       }
 
       req.user = user;
@@ -97,6 +97,16 @@ router.get('/current', authenticateToken, async (req, res) => {
       console.error(error);
       res.status(500).json({ error: 'Failed to fetch current user' });
     }
+});
+
+// Logout Route
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 module.exports = router;

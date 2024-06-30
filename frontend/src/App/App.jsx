@@ -10,13 +10,16 @@ import {UserContext} from '../UserContext'
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import api from '../api'
+import Navbar from '../Navbar/Navbar'
 
 export default function App() {
   const [user, setUser] = useState(null)
 
+
   const updateUser = (newUser) => {
     setUser(newUser);
   };
+
 
   // Save the user data to storage whenever the user state changes
   useEffect(() => {
@@ -31,7 +34,6 @@ export default function App() {
     fetchCurrentUser();
 
   }, []);
-
 
   return (
     <>
