@@ -1,5 +1,5 @@
 import './Navbar.css'
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import {UserContext} from '../UserContext'
 import api from '../api'
@@ -19,6 +19,7 @@ export default function Navbar() {
     }
   };
 
+  
   return (
         <nav className='navbar'>
           {user ? (
