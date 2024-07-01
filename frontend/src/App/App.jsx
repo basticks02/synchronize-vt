@@ -41,8 +41,8 @@ export default function App() {
         <BrowserRouter>
           <Routes>
 
-            {/* <Route path="/" element={<Landing />} />  N/B: To confirm that User is still logged in after page refresh */}
-            <Route path="/" element={user ? <Landing /> : <Login />} />
+            <Route path="/" element={<Landing />} />
+            {/* <Route path="/" element={user ? <Landing /> : <Login />} /> N/B: To confirm that User is still logged in after page refresh */}
             <Route path="/login" element={<Login />} />
             <Route path="/myprofile" element={<MyProfile />} />
             <Route path="/patients" element={<Patients />} />

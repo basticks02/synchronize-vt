@@ -1,8 +1,12 @@
 import './Patients.css'
 import Navbar from '../Navbar/Navbar'
 import React from 'react'
+import { useContext } from 'react'
+import {UserContext} from '../UserContext'
 
 export default function Patients() {
+  const {user} = useContext(UserContext)
+
   return (
     <>
         <Navbar />
@@ -13,7 +17,7 @@ export default function Patients() {
                     <source src="../images/hero.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-content">
-                    <h1>HEY 'PHYSICIAN'</h1>
+                    <h1>HEY DR. {user.username}!</h1>
                 </div>
             </section>
       </main>

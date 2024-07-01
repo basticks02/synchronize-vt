@@ -20,8 +20,10 @@ export default function Login() {
         const { user } = response.data;
         updateUser(user)
         navigate('/')
+        alert("Successfully Logged In")
       } catch (error) {
         console.error('Error logging in:', error.response ? error.response.data : error.message)
+        alert("Unsuccessful login attempt. Try again.")
       }
     } else{
       alert("Please fill out all fields")

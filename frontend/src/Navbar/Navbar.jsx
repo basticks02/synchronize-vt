@@ -13,6 +13,7 @@ export default function Navbar() {
       await api.post('/api/user/logout', {}, { withCredentials: true });
       updateUser(null);
       navigate('/');
+      alert("Successfully Logged Out")
     } catch (error) {
       console.error('Error logging out:', error.response ? error.response.data : error.message);
     }
@@ -32,8 +33,6 @@ export default function Navbar() {
             <>
               <Link to="/login">Login</Link>
               <Link to="/">Home</Link>
-              <Link to="/myprofile">My Profile</Link>
-              <Link to="/patients">Patients</Link>
               <Link to="/discover">Discover</Link>
             </>
           )}

@@ -1,9 +1,13 @@
 import './MyProfile.css'
 import Navbar from '../Navbar/Navbar'
+import { useContext } from 'react'
+import {UserContext} from '../UserContext'
 
 import React from 'react'
 
 export default function MyProfile() {
+  const {user} = useContext(UserContext)
+
   return (
     <>
       <Navbar/>
@@ -14,7 +18,7 @@ export default function MyProfile() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
-              <h1>HEY 'PATIENT'</h1>
+              <h1>HEY {user.username}!</h1>
             </div>
         </section>
 
