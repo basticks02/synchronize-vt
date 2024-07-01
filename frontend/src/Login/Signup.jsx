@@ -22,6 +22,7 @@ export default function Signup() {
         if (Object.values(data).every(field=>field)) {
           try{
             const response = await api.post('api/user/signup', data)
+            alert("Sign Up Successful!")
             navigate('/login')
           } catch (error) {
             console.error('Error signing up.', error.response ? error.response.data : error.message)
@@ -55,6 +56,7 @@ export default function Signup() {
                 id='username'
                 value={username}
                 onChange={(e)=> setUsername(e.target.value)}
+                placeholder='First name (recommended)'
                 required  />
             </div>
 
@@ -65,6 +67,7 @@ export default function Signup() {
                 id="email"
                 value={email}
                 onChange={(e)=> setEmail(e.target.value)}
+                placeholder='synchronize@gmail.com'
                 required />
             </div>
 
@@ -74,11 +77,12 @@ export default function Signup() {
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e)=> setPassword(e.target.value)} />
+                onChange={(e)=> setPassword(e.target.value)}
+                />
             </div>
 
-            <div>
-                <select className='userRole' id="role" value={role} onChange={(e)=> setRole(e.target.value)}>
+            <div className='userRole' >
+                <select id="role" value={role} onChange={(e)=> setRole(e.target.value)}>
                     <option value="">Role</option>
                     <option value="patient">Patient</option>
                     <option value="physician">Physician</option>

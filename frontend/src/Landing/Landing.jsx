@@ -1,8 +1,12 @@
 import './Landing.css'
 import { Link } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
+import { useContext } from 'react'
+import {UserContext} from '../UserContext'
 
 export default function Landing() {
+  const {user} = useContext(UserContext)
+
   return (
     <>
       <Navbar/>
@@ -13,6 +17,7 @@ export default function Landing() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
+              {user ? <p>Welcome {user.username}!</p> : ''}
               <h1 className='hospitalname'>ENO-OBONG MEMORIAL MEDICAL SERVICES</h1>
               <p>Committed to Service Excellence</p>
               <a href="#features">Learn More</a>

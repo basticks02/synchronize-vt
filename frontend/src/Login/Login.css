@@ -30,6 +30,7 @@ body{
     width: 30%;
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 }
 
 .authenticationcontainer{
@@ -63,9 +64,17 @@ button:hover{
         width: 60%;
         text-align: center;
         justify-content: center;
+        margin-bottom: 30px;
     }
 
     .socialmediaicons{
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .userRole{
         text-align: center;
     }
+
 }
