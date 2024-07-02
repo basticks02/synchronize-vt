@@ -1,7 +1,10 @@
 import './ProfileCard.css'
-import React from 'react'
+import React, { useContext }  from 'react'
+import {UserContext} from '../UserContext'
 
 export default function ProfileCard() {
+  const {user} = useContext(UserContext)
+
   return (
     <>
       <div className='card-container'>
@@ -10,7 +13,7 @@ export default function ProfileCard() {
         </div>
         <div className='patient-info'>
           <h1>Praise Ekanem</h1>
-          
+
           <p>Place of Birth: Akwa Ibom</p>
           <p>Date of Birth: 2024-02-01</p>
           <p>Sex: Male</p>

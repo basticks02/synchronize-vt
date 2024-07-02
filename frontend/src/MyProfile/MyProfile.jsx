@@ -1,10 +1,8 @@
 import './MyProfile.css'
 import Navbar from '../Navbar/Navbar'
-import { useContext } from 'react'
 import {UserContext} from '../UserContext'
-import ProfileCard from './ProfileCard/ProfileCard'
-
-import React from 'react'
+import ProfileCard from './ProfileCard'
+import React, { useContext } from 'react'
 
 export default function MyProfile() {
   const {user} = useContext(UserContext)

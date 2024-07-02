@@ -10,11 +10,10 @@ import {UserContext} from '../UserContext'
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import api from '../api'
-import Navbar from '../Navbar/Navbar'
+
 
 export default function App() {
   const [user, setUser] = useState(null)
-
 
   const updateUser = (newUser) => {
     setUser(newUser);
@@ -29,10 +28,12 @@ export default function App() {
         updateUser(response.data.user);
       } catch (error) {
         console.error('Failed to fetch current user', error);
+        if (error.response && error.response.status === 401 ) {
+          updateUser(null);3
+        }
       }
     };
     fetchCurrentUser();
-
   }, []);
 
   return (
@@ -44,10 +45,14 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             {/* <Route path="/" element={user ? <Landing /> : <Login />} /> N/B: To confirm that User is still logged in after page refresh */}
             <Route path="/login" element={<Login />} />
-            <Route path="/myprofile" element={<MyProfile />} />
-            <Route path="/patients" element={<Patients />} />
-            <Route path="/discover" element={<Discover />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/discover" element={<Discover />} />
+            {user && (
+              <>
+                <Route path="/myprofile" element={<MyProfile />} />
+                <Route path="/patients" element={<Patients />} />
+              </>
+            )}
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
