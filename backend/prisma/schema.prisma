@@ -28,9 +28,11 @@ model Patient{
   lastname String
   place_of_birth String
   date_of_birth DateTime
-  occupation String
+  sex String
   height Int
   weight Int
+  occupation String
+  address String
   phone String @unique
   complaint String?
   userId Int @unique

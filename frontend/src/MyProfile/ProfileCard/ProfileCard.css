@@ -1,0 +1,40 @@
+.card-container {
+    display: flex;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 16px;
+    align-items: center;
+    max-width: 90%;
+    margin: 30px auto;
+  }
+
+  .patient-photo img {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 250px;
+    height: 400px;
+    object-fit: cover;
+    margin-right: 20px;
+  }
+
+  .patient-info {
+    justify-content: space-between;
+    width: 100%;
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 600px) {
+    .card-container{
+        flex-direction: column;
+    }
+
+    .patient-photo{
+        width: 100%;
+        text-align: center;
+    }
+
+    .patient-photo img {
+        width: 100%;
+    }
+
+  }

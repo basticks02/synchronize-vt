@@ -2,6 +2,7 @@ import './MyProfile.css'
 import Navbar from '../Navbar/Navbar'
 import { useContext } from 'react'
 import {UserContext} from '../UserContext'
+import ProfileCard from './ProfileCard/ProfileCard'
 
 import React from 'react'
 
@@ -18,11 +19,13 @@ export default function MyProfile() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
-              <h1>HEY {user.username}!</h1>
+              {user ? <h1>HEY {user.username} !</h1>: ''}
             </div>
         </section>
 
         <section className='myinfo'>
+          <ProfileCard/>
+          <button>Create Profile</button>
             {/* TODO: Add form for patients to enter personal info */}
         </section>
 
