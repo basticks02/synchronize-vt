@@ -146,7 +146,7 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
   }
 });
 
-//Fetching Patient Profile
+//TODO Fetching Patient Profile
 
 
 module.exports = router;

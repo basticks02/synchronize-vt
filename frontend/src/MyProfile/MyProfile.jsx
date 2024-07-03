@@ -23,7 +23,12 @@ export default function MyProfile() {
       handleModalClose();
       alert('Profile Created Successfully')
     } catch (error) {
-      console.error('Error creating profile:', error);
+      console.error('Error creating profile:', error.response ? error.response.data : error.message);
+      if (error.response && error.response.status === 400) {
+        alert('Patient Profile already exists for this user');
+      } else {
+        alert('An error occurred while creating the profile. Please try again.');
+      }
     }
   };
 
