@@ -33,7 +33,7 @@ model Patient{
   weight Int
   occupation String
   address String
-  phone String @unique
+  phone String 
   complaint String?
   userId Int @unique
   user User @relation(fields: [userId], references: [id])

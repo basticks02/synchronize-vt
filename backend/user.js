@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 3600000,
+            maxAge: 300000, //session set for 5 minutes. Originally 3600000
         });
 
         res.status(200).json({message:'Login Successsful', user})
@@ -108,5 +108,45 @@ router.post('/logout', (req, res) => {
   });
   res.status(200).json({ message: 'Logged out successfully' });
 });
+
+//Creating Patient Profile
+router.post('/myprofile', authenticateToken, async (req, res) => {
+  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, complaint } = req.body;
+
+  try {
+    //ensures that another patient profile isn't created
+    const existingPatient = await prisma.patient.findUnique({
+        where: { userId: req.user.id }
+    });
+
+    if (existingPatient) {
+        return res.status(400).json({ error: 'Patient profile already exists for this user' });
+    }
+
+    const newPatient = await prisma.patient.create({
+      data: {
+        firstname,
+        lastname,
+        place_of_birth,
+        date_of_birth: new Date(date_of_birth),
+        sex,
+        height: parseInt(height, 10),
+        weight: parseInt(weight, 10),
+        occupation,
+        address,
+        phone,
+        complaint,
+        userId: req.user.id
+      }
+    });
+    res.status(201).json(newPatient);
+  } catch (error) {
+    console.error('Error creating patient profile:', error);
+    res.status(500).json({ error: 'Failed to create patient profile' });
+  }
+});
+
+//Fetching Patient Profile
+
 
 module.exports = router;

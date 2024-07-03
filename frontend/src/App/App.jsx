@@ -29,7 +29,7 @@ export default function App() {
       } catch (error) {
         console.error('Failed to fetch current user', error);
         if (error.response && error.response.status === 401 ) {
-          updateUser(null);3
+          updateUser(null);
         }
       }
     };
@@ -47,12 +47,8 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/discover" element={<Discover />} />
-            {user && (
-              <>
-                <Route path="/myprofile" element={<MyProfile />} />
-                <Route path="/patients" element={<Patients />} />
-              </>
-            )}
+            <Route path="/myprofile" element={user ? <MyProfile />: <Landing />} />
+            <Route path="/patients" element={user? <Patients />: <Landing />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
