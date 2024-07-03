@@ -43,7 +43,7 @@ export default function MyProfile() {
               <source src="../images/hero.mp4" type="video/mp4" />
             </video>
             <div className="hero-content">
-              {user ? <h1>HEY {user.username} !</h1>: ''}
+              {user ? <h1>Hey {user.username} !</h1>: ''}
             </div>
         </section>
 

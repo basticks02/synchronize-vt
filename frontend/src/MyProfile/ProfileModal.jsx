@@ -29,7 +29,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo 
     <div className="modal-overlay">
       <div className="modal-content">
         <form onSubmit={(e) => handleSubmitPatientInfo(e, formData)}>
-          <p>CREATE PATIENT PROFILE</p>
+          <p>Create Patient Profile</p>
           <input name="firstname" placeholder="First Name" value={formData.firstname} onChange={handleChange} required />
           <input name="lastname" placeholder="Last Name" value={formData.lastname} onChange={handleChange} required />
           <input name="place_of_birth" placeholder="Place of Birth" value={formData.place_of_birth} onChange={handleChange} required />
