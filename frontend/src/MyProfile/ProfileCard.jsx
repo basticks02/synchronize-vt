@@ -1,9 +1,28 @@
 import './ProfileCard.css'
-import React, { useContext }  from 'react'
+import React, { useContext, useState, useEffect }  from 'react'
 import {UserContext} from '../UserContext'
+import api from '../api'
 
 export default function ProfileCard() {
   const {user} = useContext(UserContext)
+  const [patient, setPatient] = useState(null)
+
+  useEffect(() => {
+    const fetchPatientInfo = async () => {
+      try {
+        const response = await api.get('/api/user/myprofile', { withCredentials: true });
+        setPatient(response.data);
+      } catch (error) {
+        console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
+      }
+    };
+
+    fetchPatientInfo();
+  }, [user])
+
+  if (!patient) return <div>Loading...</div>
+
+
 
   return (
     <>
@@ -12,19 +31,19 @@ export default function ProfileCard() {
           <img src="https://picsum.photos/id/64/200/300" alt="Patient" />
         </div>
         <div className='patient-info'>
-          <h1>Praise Ekanem</h1>
+          <h1> {patient.firstname} {patient.lastname} </h1>
 
-          <p>Place of Birth: Akwa Ibom</p>
-          <p>Date of Birth: 2024-02-01</p>
-          <p>Sex: Male</p>
-          <p>Height: 6.4 ft</p>
-          <p>Weight:200 lbs</p>
+          <p>Place of Birth: {patient.place_of_birth}</p>
+          <p>Date of Birth: {new Date(patient.date_of_birth).toLocaleDateString()}</p>
+          <p>Sex: {patient.sex}</p>
+          <p>Height: {patient.height} ft</p>
+          <p>Weight: {patient.weight} lbs</p>
 
-          <p>Address: 350 Sth St, San Jose</p>
-          <p>Occupation: Software Engineer</p>
-          <p>Phone: (202) 763-1327</p>
+          <p>Address: {patient.address}</p>
+          <p>Occupation: {patient.occupation}</p>
+          <p>Phone: {patient.phone}</p>
 
-          <p>Complaint: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deserunt esse possimus molestiae rerum dolorem! Sed consectetur culpa ullam impedit corporis est amet nesciunt, placeat, voluptatibus ex, beatae corrupti. In, tempore.</p>
+          <p>Complaint: {patient.complaint}</p>
         </div>
       </div>
     </>

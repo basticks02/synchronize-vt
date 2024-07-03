@@ -147,6 +147,22 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
 });
 
 //TODO Fetching Patient Profile
+router.get('/myprofile', authenticateToken, async (req, res) => {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id }
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    res.status(200).json(patient);
+  } catch (error) {
+    console.error('Error fetching patient profile:', error);
+    res.status(500).json({ error: 'Failed to fetch patient profile' });
+  }
+});
 
 
 module.exports = router;
