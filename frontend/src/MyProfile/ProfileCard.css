@@ -4,7 +4,6 @@
     border-radius: 4px;
     box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
     padding: 16px;
-    align-items: center;
     max-width: 90%;
     margin: 30px auto;
   }
@@ -22,6 +21,45 @@
     width: 100%;
     font-size: 1.3rem;
   }
+
+  .fa-ellipsis-vertical {
+    top: 16px;
+    float: right;
+    cursor: pointer;
+    scale: 1.3;
+    text-shadow: 0 0px 10px rgba(0, 0, 0, 2.0);
+    transition: all 0.3s ease;
+  }
+
+  .fa-ellipsis-vertical:hover{
+    transform: scale(1.1);
+  }
+
+.menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 25px -35px 0 0;
+  top: 20px;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.menu li {
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.Edit:hover {
+  background-color: #cfcfcf;
+}
+
+.Delete:hover{
+  background-color: rgba(245, 102, 102, 0.541);
+  color: rgb(190, 6, 6);
+}
 
   @media (max-width: 600px) {
     .card-container{

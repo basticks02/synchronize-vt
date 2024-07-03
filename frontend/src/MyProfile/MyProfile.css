@@ -18,3 +18,23 @@
   .hero-content h1{
     text-transform: uppercase;
   }
+
+  .createProfileButton{
+    margin: 20px;
+    text-align: center;
+  }
+
+  .createProfileButton button{
+    background-color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
+  }
+
+  .createProfileButton button:hover{
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    color: white;
+    background-color: black;
+  }

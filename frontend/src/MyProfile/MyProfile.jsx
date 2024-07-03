@@ -49,7 +49,9 @@ export default function MyProfile() {
 
         <section className='myinfo'>
           <ProfileCard/>
-          {!profileCreated && <button onClick={handleModalOpen}>Create Profile</button>}
+          <div className='createProfileButton'>
+            {!profileCreated && <button onClick={handleModalOpen}>Create Profile</button>}
+          </div>
           <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} handleSubmitPatientInfo={handleSubmitPatientInfo}/>
             {/* TODO: Add form for patients to enter personal info */}
         </section>

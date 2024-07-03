@@ -40,7 +40,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo 
           <input name="occupation" placeholder="Occupation" value={formData.occupation} onChange={handleChange} required />
           <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
           <input name="phone" placeholder="Phone" type="tel" value={formData.phone} onChange={handleChange} required />
-          <textarea name="complaint" placeholder="Complaint" value={formData.complaint} onChange={handleChange} />
+          <textarea name="complaint" placeholder="Complaint (optional)" value={formData.complaint} onChange={handleChange} />
           <div className='modal-controls'>
             <button className="close-button" onClick={onClose}>Cancel</button>
             <button type="submit">Save</button>

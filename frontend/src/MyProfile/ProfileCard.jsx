@@ -6,7 +6,9 @@ import api from '../api'
 export default function ProfileCard() {
   const {user} = useContext(UserContext)
   const [patient, setPatient] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
+  //fetches patient data on every render of My Profile
   useEffect(() => {
     const fetchPatientInfo = async () => {
       try {
@@ -20,16 +22,34 @@ export default function ProfileCard() {
     fetchPatientInfo();
   }, [user])
 
-  if (!patient) return <div>Loading...</div>
+  if (!patient) return <div></div>
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen)
+  }
+
+  //deletes patient profile
+  const handleDeleteProfile = async () => {
+    try{
+      await api.delete('/api/user/myprofile', { withCredentials: true })
+      setPatient(null)
+      updateUser({...user, patient: null})
+      setMenuOpen(false)
+    } catch (error) {
+      console.error('Error deleting patient profile:', error.response ? error.response.data : error.message);
+    }
+  }
 
 
   return (
     <>
       <div className='card-container'>
+
         <div className='patient-photo'>
           <img src="https://picsum.photos/id/64/200/300" alt="Patient" />
         </div>
+
+
         <div className='patient-info'>
           <h1> {patient.firstname} {patient.lastname} </h1>
 
@@ -45,6 +65,17 @@ export default function ProfileCard() {
 
           <p>Complaint: {patient.complaint}</p>
         </div>
+
+        <span className='menu-container'>
+          <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
+          {menuOpen && (
+            <ul className='menu'>
+              <li className='Edit'>Edit</li>
+              <li className='Delete' onClick={handleDeleteProfile}>Delete</li>
+            </ul>
+          )}
+        </span>
+
       </div>
     </>
   )

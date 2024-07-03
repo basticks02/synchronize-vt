@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 300000, //session set for 5 minutes. Originally 3600000
+            maxAge: 900000, //session set for 15 minutes. Originally 3600000
         });
 
         res.status(200).json({message:'Login Successsful', user})
@@ -146,7 +146,7 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
   }
 });
 
-//TODO Fetching Patient Profile
+// Fetching Patient Profile
 router.get('/myprofile', authenticateToken, async (req, res) => {
   try {
     const patient = await prisma.patient.findUnique({
@@ -163,6 +163,19 @@ router.get('/myprofile', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch patient profile' });
   }
 });
+
+//Delete Patient Profile
+router.delete('/myprofile', authenticateToken, async (req, res) => {
+  try{
+    const deletedProfile = await prisma.patient.delete({
+      where: {userId: req.user.id}
+    })
+    return res.status(200).json(deletedProfile)
+  } catch (error) {
+    console.error('Error fetching patient profile:', error);
+    res.status(500).json({ error: 'Failed to fetch patient profile' });
+  }
+})
 
 
 module.exports = router;
