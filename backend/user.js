@@ -177,5 +177,33 @@ router.delete('/myprofile', authenticateToken, async (req, res) => {
   }
 })
 
+//Edit Patient Profile
+router.put('/myprofile', authenticateToken, async (req, res) => {
+  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, complaint } = req.body;
+
+  try {
+    const updatedPatient = await prisma.patient.update({
+      where: { userId: req.user.id },
+      data: {
+        firstname,
+        lastname,
+        place_of_birth,
+        date_of_birth: new Date(date_of_birth),
+        sex,
+        height: parseInt(height, 10),
+        weight: parseInt(weight, 10),
+        occupation,
+        address,
+        phone,
+        complaint,
+      }
+    });
+    res.status(200).json(updatedPatient);
+  } catch (error) {
+    console.error('Error updating patient profile:', error);
+    res.status(500).json({ error: 'Failed to update patient profile' });
+  }
+});
+
 
 module.exports = router;

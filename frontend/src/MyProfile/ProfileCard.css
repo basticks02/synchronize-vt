@@ -33,6 +33,7 @@
 
   .fa-ellipsis-vertical:hover{
     transform: scale(1.1);
+    text-shadow: 0 5px 10px rgba(0, 0, 0, 4.0);
   }
 
 .menu {

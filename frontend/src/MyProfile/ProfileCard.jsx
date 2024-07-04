@@ -1,32 +1,40 @@
 import './ProfileCard.css'
-import React, { useContext, useState, useEffect }  from 'react'
+import React, { useContext, useState }  from 'react'
 import {UserContext} from '../UserContext'
 import api from '../api'
+import ProfileModal from './ProfileModal'
 
-export default function ProfileCard() {
-  const {user} = useContext(UserContext)
-  const [patient, setPatient] = useState(null)
+export default function ProfileCard({patient, setPatient}) {
+  const {user, updateUser} = useContext(UserContext)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
-  //fetches patient data on every render of My Profile
-  useEffect(() => {
-    const fetchPatientInfo = async () => {
-      try {
-        const response = await api.get('/api/user/myprofile', { withCredentials: true });
-        setPatient(response.data);
-      } catch (error) {
-        console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
-      }
-    };
-
-    fetchPatientInfo();
-  }, [user])
 
   if (!patient) return <div></div>
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
   }
+
+  const handleEditProfile = () => {
+    setEditModalOpen(true);
+    setMenuOpen(false);
+  };
+
+  //Update patient profile
+  const handleUpdatePatientInfo = async (e, formData) => {
+    e.preventDefault();
+    try {
+      const response = await api.put('/api/user/myprofile', formData, { withCredentials: true });
+      setPatient(response.data);
+      updateUser({ ...user, patient: response.data });
+      setEditModalOpen(false);
+      alert('Profile Updated Successfully');
+    } catch (error) {
+      console.error('Error updating profile:', error.response ? error.response.data : error.message);
+      alert('An error occurred while updating the profile. Please try again.');
+    }
+  };
 
   //deletes patient profile
   const handleDeleteProfile = async () => {
@@ -70,12 +78,18 @@ export default function ProfileCard() {
           <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
           {menuOpen && (
             <ul className='menu'>
-              <li className='Edit'>Edit</li>
+              <li className='Edit' onClick={handleEditProfile}>Edit</li>
               <li className='Delete' onClick={handleDeleteProfile}>Delete</li>
             </ul>
           )}
         </span>
-
+        <ProfileModal
+          isOpen={isEditModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          handleSubmitPatientInfo={handleUpdatePatientInfo}
+          initialData={patient}
+          title="Edit Patient Profile"
+        />
       </div>
     </>
   )
