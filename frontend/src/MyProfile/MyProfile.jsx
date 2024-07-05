@@ -5,15 +5,19 @@ import ProfileCard from './ProfileCard'
 import React, { useContext, useState, useEffect } from 'react'
 import ProfileModal from './ProfileModal'
 import ApptModal from './ApptModal'
+import ApptCard from './ApptCard'
 import api from '../api';
 
 export default function MyProfile() {
   const {user, updateUser} = useContext(UserContext)
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isApptModalOpen, setApptModalOpen] = useState(false)
   const [patient, setPatient] = useState(null)
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+  const handleApptModalOpen = () => setApptModalOpen(true)
+  const handleApptModalClose = () => setApptModalOpen(false)
 
   //fetches patient data on every render of My Profile
   useEffect(() => {
@@ -47,6 +51,20 @@ export default function MyProfile() {
     }
   };
 
+  // Add submit Appt data functionality here
+  const handleSubmitAppointment = async (e, appointmentData) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('/api/user/appointments', { ...appointmentData, patientId: patient.id }, { withCredentials: true });
+      handleApptModalClose();
+      alert('Appointment Created Successfully');
+    } catch (error) {
+      console.error('Error creating appointment:', error.response ? error.response.data : error.message);
+      alert('An error occurred while creating the appointment. Please try again.');
+    }
+  };
+
+
 
   return (
     <>
@@ -76,9 +94,18 @@ export default function MyProfile() {
 
         <section className='appointments'>
           <div className='createApptButton'>
-
+            <button onClick={handleApptModalOpen}> Add Appointment</button>
           </div>
+          <ApptModal
+            isApptModalOpen={isApptModalOpen}
+            handleApptModalClose={handleApptModalClose}
+            handleSubmitAppointment={handleSubmitAppointment}
+            title="Create Appointment"
+          />
+          <div className='ApptList'>
+            <ApptCard/>
             {/* TODO: Create Appointments List */}
+          </div>
         </section>
 
       </main>

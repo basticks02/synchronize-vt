@@ -38,9 +38,8 @@ model Appointment{
   id          Int      @id @default(autoincrement())
   title       String
   date        DateTime
-  start_time        DateTime
-  end_time        DateTime
-  createdAt   DateTime @default(now())
+  start_time        String
+  end_time        String
   patientId   Int
   patient     Patient  @relation(fields: [patientId], references: [id])
 }

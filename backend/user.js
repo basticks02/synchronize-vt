@@ -205,5 +205,34 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
   }
 });
 
+//Posting a new Appointment
+router.post('/appointments', authenticateToken, async (req, res) => {
+  const { title, date, start_time, end_time, patientId } = req.body;
+
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientId },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const newAppointment = await prisma.appointment.create({
+      data: {
+        title,
+        date: new Date(date),
+        start_time,
+        end_time,
+        patientId: patient.id,
+      },
+    });
+    res.status(201).json(newAppointment);
+  } catch (error) {
+    console.error('Error creating appointment:', error);
+    res.status(500).json({ error: 'Failed to create appointment' });
+  }
+});
+
 
 module.exports = router;
