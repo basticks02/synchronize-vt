@@ -234,5 +234,26 @@ router.post('/appointments', authenticateToken, async (req, res) => {
   }
 });
 
+//Getting all appointments
+router.get('/appointments', authenticateToken, async (req, res) => {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id },
+      include: { appointments: true }
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    res.status(200).json(patient.appointments);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+})
+
+//Deleteing an appointment
+
 
 module.exports = router;

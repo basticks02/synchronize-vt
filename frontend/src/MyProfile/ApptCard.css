@@ -1,0 +1,28 @@
+.cardContainer{
+    display: flex;
+    justify-content: space-between;
+    border: 0.5px rgba(96, 95, 95, 0.105) solid;
+    padding: 16px;
+    transition: all 0.5s ease;
+}
+
+.cardContainer:hover{
+    box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.fa-trash-can{
+    margin-right: 10px;
+}
+
+.apptTitle{
+    width: 600px;
+}
+
+.apptTime{
+    width: 200px;
+    text-align: center;
+}
+
+.apptDate{
+    width: 100px;
+}

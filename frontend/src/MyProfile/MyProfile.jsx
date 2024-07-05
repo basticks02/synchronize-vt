@@ -13,6 +13,7 @@ export default function MyProfile() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isApptModalOpen, setApptModalOpen] = useState(false)
   const [patient, setPatient] = useState(null)
+  const [appointments, setAppointments] = useState([])
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
@@ -25,6 +26,9 @@ export default function MyProfile() {
       try {
         const response = await api.get('/api/user/myprofile', { withCredentials: true });
         setPatient(response.data);
+
+        const appointmentsResponse = await api.get('/api/user/appointments', { withCredentials: true });
+        setAppointments(appointmentsResponse.data);
       } catch (error) {
         console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
       }
@@ -39,6 +43,7 @@ export default function MyProfile() {
       const response = await api.post('/api/user/myprofile', formData, { withCredentials: true });
       updateUser({ ...user, patient: response.data });
       setPatient(response.data);
+      setAppointmentData({ title: '', date: '', start_time: '', end_time: '' });
       handleModalClose();
       alert('Profile Created Successfully')
     } catch (error) {
@@ -102,9 +107,13 @@ export default function MyProfile() {
             handleSubmitAppointment={handleSubmitAppointment}
             title="Create Appointment"
           />
-          <div className='ApptList'>
-            <ApptCard/>
-            {/* TODO: Create Appointments List */}
+          <div className='apptList'>
+            <div className='apptHeadline'>
+              <h3>Current Appointments</h3>
+            </div>
+            {appointments.map((appointment) => (
+              <ApptCard key={appointment.id} appointment={appointment} />
+            ))}
           </div>
         </section>
 

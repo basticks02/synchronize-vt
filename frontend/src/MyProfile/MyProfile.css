@@ -19,7 +19,7 @@
     text-transform: uppercase;
   }
 
-  .createProfileButton{
+  .createProfileButton, .createApptButton{
     margin: 20px;
     text-align: center;
   }
@@ -38,3 +38,36 @@
     color: white;
     background-color: black;
   }
+
+.createApptButton button{
+    background-color: rgb(5, 130, 16);
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
+    color: white;
+}
+
+.createApptButton button:hover{
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    color: white;
+    background-color: black;
+}
+
+.appointments{
+    padding-top: 40px;
+}
+
+.apptList{
+    /* border: 1px black solid; */
+    box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    margin: auto;
+}
+
+.apptHeadline{
+    text-align: center;
+    padding: 20px;
+    text-transform: uppercase;
+}
