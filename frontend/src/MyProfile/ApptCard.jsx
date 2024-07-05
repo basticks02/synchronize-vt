@@ -1,7 +1,7 @@
 import React from 'react'
 import './ApptCard.css'
 
-export default function ApptCard({appointment, handleDeleteAppointment}) {
+export default function ApptCard({appointment, handleDeleteAppointment, onEdit}) {
 
     //formatting for time (since  it was stored as a string in the db)
     const formatTime = (timeString) => {
@@ -26,7 +26,7 @@ export default function ApptCard({appointment, handleDeleteAppointment}) {
                 </div>
                 <div className='apptContols'>
                     <i className="fa-regular fa-trash-can" onClick={() => handleDeleteAppointment(appointment.id) }  ></i>
-                    <i className="fa-regular fa-pen-to-square"></i>
+                    <i className="fa-regular fa-pen-to-square" onClick={() => onEdit(appointment)}></i>
                 </div>
             </div>
         </>

@@ -14,11 +14,14 @@ export default function MyProfile() {
   const [isApptModalOpen, setApptModalOpen] = useState(false)
   const [patient, setPatient] = useState(null)
   const [appointments, setAppointments] = useState([])
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
   const handleApptModalOpen = () => setApptModalOpen(true)
-  const handleApptModalClose = () => setApptModalOpen(false)
+  const handleApptModalClose = () => {
+    setApptModalOpen(false);
+    setSelectedAppointment(null)}
 
   //fetches patient data on every render of My Profile
   useEffect(() => {
@@ -28,7 +31,8 @@ export default function MyProfile() {
         setPatient(response.data);
 
         const appointmentsResponse = await api.get('/api/user/appointments', { withCredentials: true });
-        setAppointments(appointmentsResponse.data);
+        const sortedAppointments = appointmentsResponse.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        setAppointments(sortedAppointments);
       } catch (error) {
         console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
       }
@@ -43,7 +47,6 @@ export default function MyProfile() {
       const response = await api.post('/api/user/myprofile', formData, { withCredentials: true });
       updateUser({ ...user, patient: response.data });
       setPatient(response.data);
-      setAppointmentData({ title: '', date: '', start_time: '', end_time: '' });
       handleModalClose();
       alert('Profile Created Successfully')
     } catch (error) {
@@ -56,18 +59,30 @@ export default function MyProfile() {
     }
   };
 
-  //Creating an appointment
+  //Creating & Editting an appointment
   const handleSubmitAppointment = async (e, appointmentData) => {
     e.preventDefault();
     try {
-      const response = await api.post('/api/user/appointments', { ...appointmentData, patientId: patient.id }, { withCredentials: true });
-      setAppointments([...appointments, response.data]);
+      if(selectedAppointment){
+        const response = await api.put(`/api/user/appointments/${selectedAppointment.id}`, appointmentData, { withCredentials: true });
+        setAppointments(appointments.map(appt => appt.id === response.data.id ? response.data : appt));
+        setSelectedAppointment(null);
+        alert('Appointment Updated Successfully');
+      } else {
+        const response = await api.post('/api/user/appointments', { ...appointmentData, patientId: patient.id }, { withCredentials: true });
+        setAppointments([...appointments, response.data]);
+        alert('Appointment Created Successfully');
+      }
       handleApptModalClose();
-      alert('Appointment Created Successfully');
     } catch (error) {
       console.error('Error creating appointment:', error.response ? error.response.data : error.message);
       alert('An error occurred while creating the appointment. Please try again.');
     }
+  };
+
+  const handleEditAppointment = (appointment) => {
+    setSelectedAppointment(appointment);
+    handleApptModalOpen();
   };
 
   //Deleting an appointment
@@ -116,14 +131,15 @@ export default function MyProfile() {
             isApptModalOpen={isApptModalOpen}
             handleApptModalClose={handleApptModalClose}
             handleSubmitAppointment={handleSubmitAppointment}
-            title="Create Appointment"
+            title={selectedAppointment ? "Edit Appointment" : "Create Appointment"}
+            initialData = {selectedAppointment}
           />
           <div className='apptList'>
             <div className='apptHeadline'>
               <h3>Appointments</h3>
             </div>
             {appointments.map((appointment) => (
-              <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment}/>
+              <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} />
             ))}
           </div>
         </section>

@@ -1,13 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './ApptModal.css'
 
-export default function ApptModal({isApptModalOpen, handleApptModalClose, handleSubmitAppointment, title}) {
+export default function ApptModal({isApptModalOpen, handleApptModalClose, handleSubmitAppointment, title, initialData}) {
     const [appointmentData, setAppointmentData] = useState({
         title: '',
         date: '',
         start_time: '',
         end_time: ''
     })
+
+    //for Editting
+    useEffect(() => {
+        if (isApptModalOpen && initialData) {
+          setAppointmentData({
+            title: initialData.title || '',
+            date: initialData.date ? initialData.date.split('T')[0] : '',
+            start_time: initialData.start_time || '',
+            end_time: initialData.end_time || '',
+          });
+        }
+      }, [isApptModalOpen, initialData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

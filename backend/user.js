@@ -268,4 +268,26 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
   }
 })
 
+//Editting an appointment
+router.put('/appointments/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { title, date, start_time, end_time } = req.body;
+
+  try {
+    const updatedAppointment = await prisma.appointment.update({
+      where: { id: parseInt(id, 10) },
+      data: {
+        title,
+        date: new Date(date),
+        start_time,
+        end_time
+      }
+    });
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ error: 'Failed to update appointment' });
+  }
+});
+
 module.exports = router;

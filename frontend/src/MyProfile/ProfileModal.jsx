@@ -18,6 +18,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
     complaint: '',
   });
 
+  //for Editting
   useEffect(() => {
     if (isOpen && initialData && Object.keys(initialData).length > 0) {
       setFormData({
@@ -36,6 +37,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
     }
   }, [isOpen, initialData]);
 
+  //for New Profile
   useEffect(() => {
     if (isOpen && (!initialData || Object.keys(initialData).length === 0)) {
       setFormData({
