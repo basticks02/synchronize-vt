@@ -19,7 +19,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
   });
 
   useEffect(() => {
-    if (isOpen && initialData) {
+    if (isOpen && initialData && Object.keys(initialData).length > 0) {
       setFormData({
         firstname: initialData.firstname || '',
         lastname: initialData.lastname || '',
@@ -36,6 +36,23 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
     }
   }, [isOpen, initialData]);
 
+  useEffect(() => {
+    if (isOpen && (!initialData || Object.keys(initialData).length === 0)) {
+      setFormData({
+        firstname: '',
+        lastname: '',
+        place_of_birth: '',
+        date_of_birth: '',
+        sex: '',
+        height: '',
+        weight: '',
+        occupation: '',
+        address: '',
+        phone: '',
+        complaint: '',
+      });
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

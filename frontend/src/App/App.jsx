@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Landing from '../Landing/Landing'
 import Login from '../Login/Login'
 import MyProfile from '../MyProfile/MyProfile'
@@ -7,7 +7,6 @@ import Discover from '../Discover/Discover'
 import Signup from '../Login/Signup'
 import './App.css'
 import {UserContext} from '../UserContext'
-import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import api from '../api'
 

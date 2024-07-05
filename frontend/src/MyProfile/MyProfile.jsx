@@ -4,6 +4,7 @@ import {UserContext} from '../UserContext'
 import ProfileCard from './ProfileCard'
 import React, { useContext, useState, useEffect } from 'react'
 import ProfileModal from './ProfileModal'
+import ApptModal from './ApptModal'
 import api from '../api';
 
 export default function MyProfile() {
@@ -74,6 +75,9 @@ export default function MyProfile() {
         </section>
 
         <section className='appointments'>
+          <div className='createApptButton'>
+
+          </div>
             {/* TODO: Create Appointments List */}
         </section>
 

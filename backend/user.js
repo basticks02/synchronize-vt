@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 900000, //session set for 15 minutes. Originally 3600000
+            maxAge: 3600000, //session set for 15 minutes. Originally 3600000
         });
 
         res.status(200).json({message:'Login Successsful', user})
