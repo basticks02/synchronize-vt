@@ -26,3 +26,21 @@
 .apptDate{
     width: 100px;
 }
+
+.fa-trash-can{
+    color: red;
+    transition: all 0.5s ease;
+}
+
+.fa-trash-can:hover{
+    cursor: pointer;
+    color: rgb(194, 31, 31);
+}
+
+.fa-pen-to-square{
+    color: rgb(1, 1, 103);
+}
+
+.fa-pen-to-square:hover{
+    cursor: pointer;
+}

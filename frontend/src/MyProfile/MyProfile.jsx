@@ -56,16 +56,27 @@ export default function MyProfile() {
     }
   };
 
-  // Add submit Appt data functionality here
+  //Creating an appointment
   const handleSubmitAppointment = async (e, appointmentData) => {
     e.preventDefault();
     try {
       const response = await api.post('/api/user/appointments', { ...appointmentData, patientId: patient.id }, { withCredentials: true });
+      setAppointments([...appointments, response.data]);
       handleApptModalClose();
       alert('Appointment Created Successfully');
     } catch (error) {
       console.error('Error creating appointment:', error.response ? error.response.data : error.message);
       alert('An error occurred while creating the appointment. Please try again.');
+    }
+  };
+
+  //Deleting an appointment
+  const handleDeleteAppointment = async (id) => {
+    try {
+      await api.delete(`/api/user/appointments/${id}`, { withCredentials: true });
+      setAppointments(appointments.filter(appointment => appointment.id !== id));
+    } catch (error) {
+      console.error('Error deleting appointment:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -99,7 +110,7 @@ export default function MyProfile() {
 
         <section className='appointments'>
           <div className='createApptButton'>
-            <button onClick={handleApptModalOpen}> Add Appointment</button>
+            <button onClick={handleApptModalOpen}> <i className="fa-solid fa-plus"></i></button>
           </div>
           <ApptModal
             isApptModalOpen={isApptModalOpen}
@@ -109,10 +120,10 @@ export default function MyProfile() {
           />
           <div className='apptList'>
             <div className='apptHeadline'>
-              <h3>Current Appointments</h3>
+              <h3>Appointments</h3>
             </div>
             {appointments.map((appointment) => (
-              <ApptCard key={appointment.id} appointment={appointment} />
+              <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment}/>
             ))}
           </div>
         </section>

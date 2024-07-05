@@ -254,6 +254,18 @@ router.get('/appointments', authenticateToken, async (req, res) => {
 })
 
 //Deleteing an appointment
+router.delete('/appointments/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
 
+  try{
+    const deletedAppointment = await prisma.appointment.delete({
+      where: { id: parseInt(id) },
+    });
+    res.status(200).json(deletedAppointment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete appointment' });
+  }
+})
 
 module.exports = router;

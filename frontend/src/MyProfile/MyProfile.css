@@ -41,12 +41,18 @@
 
 .createApptButton button{
     background-color: rgb(5, 130, 16);
+    height: 50px;
+    width: 50px;
     border: none;
     padding: 10px;
-    border-radius: 20px;
+    border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.5s ease;
     color: white;
+}
+
+.fa-plus{
+    scale: 150%;
 }
 
 .createApptButton button:hover{
