@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Landing from '../Landing/Landing'
 import Login from '../Login/Login'
 import MyProfile from '../MyProfile/MyProfile'
@@ -7,14 +7,12 @@ import Discover from '../Discover/Discover'
 import Signup from '../Login/Signup'
 import './App.css'
 import {UserContext} from '../UserContext'
-import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import api from '../api'
-import Navbar from '../Navbar/Navbar'
+
 
 export default function App() {
   const [user, setUser] = useState(null)
-
 
   const updateUser = (newUser) => {
     setUser(newUser);
@@ -29,10 +27,12 @@ export default function App() {
         updateUser(response.data.user);
       } catch (error) {
         console.error('Failed to fetch current user', error);
+        if (error.response && error.response.status === 401 ) {
+          updateUser(null);
+        }
       }
     };
     fetchCurrentUser();
-
   }, []);
 
   return (
@@ -44,10 +44,10 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             {/* <Route path="/" element={user ? <Landing /> : <Login />} /> N/B: To confirm that User is still logged in after page refresh */}
             <Route path="/login" element={<Login />} />
-            <Route path="/myprofile" element={<MyProfile />} />
-            <Route path="/patients" element={<Patients />} />
-            <Route path="/discover" element={<Discover />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/myprofile" element={user ? <MyProfile />: <Landing />} />
+            <Route path="/patients" element={user? <Patients />: <Landing />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
