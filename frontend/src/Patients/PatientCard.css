@@ -1,0 +1,24 @@
+.patient-card{
+    display: flex;
+    justify-content: space-between;
+    border: 0.5px rgba(96, 95, 95, 0.105) solid;
+    padding: 16px;
+    transition: all 0.5s ease;
+    align-items: center;
+}
+
+.profile-picture img{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.patient-name{
+    width: 50%;
+}
+
+.patient-card:hover{
+    box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}

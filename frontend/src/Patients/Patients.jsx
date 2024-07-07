@@ -3,6 +3,7 @@ import Navbar from '../Navbar/Navbar'
 import React from 'react'
 import { useContext } from 'react'
 import {UserContext} from '../UserContext'
+import PatientCard from './PatientCard'
 
 export default function Patients() {
   const {user} = useContext(UserContext)
@@ -22,7 +23,10 @@ export default function Patients() {
             </section>
 
             <section className='patientlist'>
-              
+              <div className='patientHeadline'>
+                <h3>Your Patients</h3>
+              </div>
+              <PatientCard/>
             </section>
       </main>
     </>

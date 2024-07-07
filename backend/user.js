@@ -37,6 +37,14 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try{
+        if (role === 'physician') {
+        // Check if a physician already exists
+          const existingPhysician = await prisma.physician.findFirst();
+          if (existingPhysician) {
+              return res.status(400).json({ error: 'A physician account already exists' });
+          }
+        }
+
         const newUser = await prisma.user.create({
             data: {
                 username,
@@ -304,6 +312,25 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error updating appointment:', error);
     res.status(500).json({ error: 'Failed to update appointment' });
+  }
+});
+
+//Fetching all patients
+router.get('/patients', authenticateToken, async (req, res) => {
+  try {
+      const physician = await prisma.physician.findUnique({
+          where: { userId: req.user.id },
+          include: { patients: true }
+      });
+
+      if (!physician) {
+          return res.status(404).json({ error: 'Physician not found' });
+      }
+
+      res.status(200).json(physician.patients);
+  } catch (error) {
+      console.error('Error fetching patients:', error);
+      res.status(500).json({ error: 'Failed to fetch patients' });
   }
 });
 
