@@ -41,5 +41,5 @@ model Appointment{
   start_time        String
   end_time        String
   patientId   Int
-  patient     Patient  @relation(fields: [patientId], references: [id])
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }

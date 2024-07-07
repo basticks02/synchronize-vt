@@ -1,7 +1,7 @@
 import React from 'react'
 import './ApptCard.css'
 
-export default function ApptCard({appointment, handleDeleteAppointment, onEdit}) {
+export default function ApptCard({appointment, handleDeleteAppointment, onEdit, isPast}) {
 
     //formatting for time (since  it was stored as a string in the db)
     const formatTime = (timeString) => {
@@ -14,7 +14,7 @@ export default function ApptCard({appointment, handleDeleteAppointment, onEdit})
 
     return (
         <>
-            <div className='cardContainer'>
+            <div className={`cardContainer ${isPast ? 'pastAppointment' : ''}`}>
                 <div className='apptDate'>
                     <p>{new Date(appointment.date).toLocaleDateString()}</p>
                 </div>

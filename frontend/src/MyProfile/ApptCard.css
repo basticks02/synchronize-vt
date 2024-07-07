@@ -44,3 +44,18 @@
 .fa-pen-to-square:hover{
     cursor: pointer;
 }
+
+.pastAppointment {
+    background-color: #f0f0f0;
+    color: #a0a0a0;
+    .fa-pen-to-square:hover{
+        cursor: auto;
+    }
+    .fa-trash-can:hover{
+        cursor: auto;
+    }
+}
+
+.pastAppointment:hover{
+    box-shadow: none;
+}
