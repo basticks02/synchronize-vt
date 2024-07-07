@@ -95,6 +95,10 @@ export default function MyProfile() {
     }
   };
 
+  const currentAppointments = appointments.filter(appointment => new Date(appointment.date) >= new Date());
+  const pastAppointments = appointments.filter(appointment => new Date(appointment.date) < new Date());
+
+
 
 
   return (
@@ -134,17 +138,27 @@ export default function MyProfile() {
             title={selectedAppointment ? "Edit Appointment" : "Create Appointment"}
             initialData = {selectedAppointment}
           />
+
           <div className='apptList'>
             <div className='apptHeadline'>
-              <h3>Appointments</h3>
+              <h3>Current Appointments</h3>
             </div>
-            {appointments.map((appointment) => (
+            {currentAppointments.map((appointment) => (
               <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} />
+            ))}
+            
+            {pastAppointments.map((appointment) => (
+              <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} isPast />
             ))}
           </div>
         </section>
 
+
       </main>
+
+      <footer>
+        <p>Developed by Synchronize</p>
+      </footer>
     </>
   )
 }
