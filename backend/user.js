@@ -45,6 +45,15 @@ router.post('/signup', async (req, res) => {
                 role
             }
         })
+
+        if (role === 'physician') {
+          await prisma.physician.create({
+              data: {
+                  userId: newUser.id
+              }
+          });
+        }
+
         res.status(201).json(newUser)
     } catch (error){
         console.error(error);
@@ -123,6 +132,13 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: 'Patient profile already exists for this user' });
     }
 
+    //fetches only physician
+    const physician = await prisma.physician.findFirst();
+
+    if (!physician) {
+        return res.status(404).json({ error: 'Physician not found' });
+    }
+
     const newPatient = await prisma.patient.create({
       data: {
         firstname,
@@ -136,7 +152,8 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         address,
         phone,
         complaint,
-        userId: req.user.id
+        userId: req.user.id,
+        physicianId: physician.id
       }
     });
     res.status(201).json(newPatient);
