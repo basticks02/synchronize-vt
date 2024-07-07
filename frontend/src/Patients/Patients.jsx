@@ -20,6 +20,10 @@ export default function Patients() {
                     <h1>HEY DR. {user.username}!</h1>
                 </div>
             </section>
+
+            <section className='patientlist'>
+              
+            </section>
       </main>
     </>
   )
