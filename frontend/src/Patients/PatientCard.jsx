@@ -1,14 +1,14 @@
 import React from 'react'
 import './PatientCard.css'
 
-export default function PatientCard() {
+export default function PatientCard({patient, onClick}) {
   return (
-    <div className='patient-card'>
+    <div className='patient-card' onClick={() => onClick(patient.id)} >
         <div className='profile-picture'>
             <img src="https://picsum.photos/id/64/200/300" alt="patient" />
         </div>
         <div className='patient-name'>
-            <p>Ekomobong Ekanem</p>
+            <p>{patient.firstname} {patient.lastname}</p>
         </div>
         <div className='patient-controls'>
             <i className="fa-regular fa-trash-can"></i>
