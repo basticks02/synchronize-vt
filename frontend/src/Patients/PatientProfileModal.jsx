@@ -17,10 +17,10 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
     if (isOpen) {
       const fetchPatientInfo = async () => {
         try {
-          const response = await api.get(`/api/user/patient/${patientId}`, { withCredentials: true });
+          const response = await api.get(`/api/user/patients/${patientId}`, { withCredentials: true });
           setPatient(response.data);
 
-          const appointmentsResponse = await api.get(`/api/user/patient/${patientId}/appointments`, { withCredentials: true });
+          const appointmentsResponse = await api.get(`/api/user/patients/${patientId}/appointments`, { withCredentials: true });
           setAppointments(appointmentsResponse.data);
         } catch (error) {
           console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
@@ -85,14 +85,11 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-button" onClick={onClose}>Close</button>
+        <span className="close" onClick={onClose}>&times;</span>
         {patient && (
           <>
             <ProfileCard patient={patient} setPatient={setPatient} />
-            <div className='edit-buttons'>
-              <button onClick={() => setProfileModalOpen(true)}>Edit Profile</button>
-              <button onClick={handleDeletePatient}>Delete Profile</button>
-            </div>
+            
             <ProfileModal
               isOpen={isProfileModalOpen}
               onClose={() => setProfileModalOpen(false)}
@@ -102,7 +99,7 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
             />
             <div className='appointments'>
               <div className='createApptButton'>
-                <button onClick={() => setApptModalOpen(true)}>Add Appointment</button>
+                <button onClick={() => setApptModalOpen(true)}> <i className='fa-solid fa-plus'></i> </button>
               </div>
               <ApptModal
                 isApptModalOpen={isApptModalOpen}

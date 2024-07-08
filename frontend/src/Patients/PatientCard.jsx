@@ -1,7 +1,7 @@
 import React from 'react'
 import './PatientCard.css'
 
-export default function PatientCard({patient, onClick}) {
+export default function PatientCard({patient, onClick, onEdit, onDelete}) {
   return (
     <div className='patient-card' onClick={() => onClick(patient.id)} >
         <div className='profile-picture'>
@@ -11,8 +11,8 @@ export default function PatientCard({patient, onClick}) {
             <p>{patient.firstname} {patient.lastname}</p>
         </div>
         <div className='patient-controls'>
-            <i className="fa-regular fa-trash-can"></i>
-            <i className="fa-regular fa-pen-to-square"></i>
+            <i className="fa-regular fa-trash-can" onClick={(e) => { e.stopPropagation(); onDelete(patient.id); }}></i>
+            <i className="fa-regular fa-pen-to-square" onClick={(e) => { e.stopPropagation(); onEdit(patient.id); }}></i>
         </div>
     </div>
   )

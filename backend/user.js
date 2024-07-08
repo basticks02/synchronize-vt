@@ -315,7 +315,7 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
   }
 });
 
-//Fetching all patients
+//Fetching all patients data
 router.get('/patients', authenticateToken, async (req, res) => {
   try {
       const physician = await prisma.physician.findUnique({
@@ -333,5 +333,47 @@ router.get('/patients', authenticateToken, async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch patients' });
   }
 });
+
+//Fetchind specific Patient data
+router.get('/patients/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    res.status(200).json(patient);
+  } catch (error) {
+    console.error('Error fetching patient profile:', error);
+    res.status(500).json({ error: 'Failed to fetch patient profile' });
+  }
+});
+
+//Fetching particular Patient's appointments
+router.get('/patients/:id/appointments', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const appointments = await prisma.appointment.findMany({
+      where: { patientId: parseInt(id) },
+      orderBy: { date: 'asc' }, // This will order the appointments by date
+    });
+
+    if (!appointments) {
+      return res.status(404).json({ error: 'Appointments not found' });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+});
+
 
 module.exports = router;

@@ -26,6 +26,12 @@ export default function Patients() {
   }, [])
 
   //TODO: Add Edit patient data & delete here
+  
+
+  const handlePatientClick = (id) => {
+    setSelectedPatientId(id);
+    setProfileModalOpen(true);
+  };
 
   return (
     <>
@@ -42,12 +48,20 @@ export default function Patients() {
             </section>
 
             <section className='patientlist'>
+
               <div className='patientHeadline'>
                 <h3>Your Patients</h3>
               </div>
+
               {patients.map((patient) => (
-                <PatientCard key ={patients.id} patient={patient}/>
+                <PatientCard key ={patients.id} patient={patient} onClick={handlePatientClick}/>
               ))}
+
+              <PatientProfileModal
+                    isOpen={isProfileModalOpen}
+                    onClose={() => setProfileModalOpen(false)}
+                    patientId={selectedPatientId}
+              />
             </section>
       </main>
     </>
