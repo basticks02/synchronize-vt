@@ -337,14 +337,13 @@ router.get('/patients', authenticateToken, async (req, res) => {
 //Fetchind specific Patient data
 router.get('/patients/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
-
   try {
     const patient = await prisma.patient.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(id, 10) },
     });
 
     if (!patient) {
-      return res.status(404).json({ error: 'Patient profile not found' });
+      return res.status(404).json({ error: 'Patient not found' });
     }
 
     res.status(200).json(patient);
@@ -353,6 +352,7 @@ router.get('/patients/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch patient profile' });
   }
 });
+
 
 //Fetching particular Patient's appointments
 router.get('/patients/:id/appointments', authenticateToken, async (req, res) => {
@@ -374,6 +374,21 @@ router.get('/patients/:id/appointments', authenticateToken, async (req, res) => 
     res.status(500).json({ error: 'Failed to fetch appointments' });
   }
 });
+
+//Deleting a particular patient profile
+router.delete('/patients/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedProfile = await prisma.patient.delete({
+      where: { id: parseInt(id, 10) },
+    });
+    res.status(200).json(deletedProfile);
+  } catch (error) {
+    console.error('Error deleting patient profile:', error);
+    res.status(500).json({ error: 'Failed to delete patient profile' });
+  }
+});
+
 
 
 module.exports = router;

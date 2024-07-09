@@ -25,8 +25,19 @@ export default function Patients() {
     fetchPatients()
   }, [])
 
-  //TODO: Add Edit patient data & delete here
-  
+  const handlePatientDelete = async (id) => {
+    try {
+      await api.delete(`/api/user/patients/${id}`, { withCredentials: true });
+      setPatients(patients.filter(patient => patient.id !== id));
+    } catch (error) {
+      console.error('Error deleting patient:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handlePatientEdit = (patient) => {
+    setSelectedPatientId(patient.id);
+    setProfileModalOpen(true);
+  };
 
   const handlePatientClick = (id) => {
     setSelectedPatientId(id);
@@ -54,7 +65,12 @@ export default function Patients() {
               </div>
 
               {patients.map((patient) => (
-                <PatientCard key ={patients.id} patient={patient} onClick={handlePatientClick}/>
+                <PatientCard
+                  key ={patient.id}
+                  patient={patient}
+                  onClick={handlePatientClick}
+                  onEdit={handlePatientEdit}
+                  onDelete={handlePatientDelete}/>
               ))}
 
               <PatientProfileModal

@@ -14,7 +14,7 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && patientId) {
       const fetchPatientInfo = async () => {
         try {
           const response = await api.get(`/api/user/patients/${patientId}`, { withCredentials: true });
@@ -30,21 +30,6 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
       fetchPatientInfo();
     }
   }, [isOpen, patientId]);
-
-
-  //Edit Profile Command
-  const handleEditPatient = (formData) => {
-    // Implement the edit functionality
-  };
-
-  const handleDeletePatient = async () => {
-    try {
-      await api.delete(`/api/user/patient/${patientId}`, { withCredentials: true });
-      onClose();
-    } catch (error) {
-      console.error('Error deleting patient:', error.response ? error.response.data : error.message);
-    }
-  };
 
   const handleSubmitAppointment = async (e, appointmentData) => {
     e.preventDefault();
@@ -84,23 +69,24 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="patient-modal-content">
         <span className="close" onClick={onClose}>&times;</span>
         {patient && (
           <>
-            <ProfileCard patient={patient} setPatient={setPatient} />
-            
+            <ProfileCard patient={patient} setPatient={setPatient} showMenu={false} />
+
             <ProfileModal
               isOpen={isProfileModalOpen}
               onClose={() => setProfileModalOpen(false)}
-              handleSubmitPatientInfo={handleEditPatient}
               initialData={patient}
               title="Edit Patient Profile"
             />
+
             <div className='appointments'>
               <div className='createApptButton'>
                 <button onClick={() => setApptModalOpen(true)}> <i className='fa-solid fa-plus'></i> </button>
               </div>
+
               <ApptModal
                 isApptModalOpen={isApptModalOpen}
                 handleApptModalClose={() => setApptModalOpen(false)}
@@ -108,6 +94,7 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
                 title={selectedAppointment ? "Edit Appointment" : "Create Appointment"}
                 initialData={selectedAppointment}
               />
+
               <div className='apptList'>
                 <div className='apptHeadline'>
                   <h3>Appointments</h3>
@@ -116,6 +103,7 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
                   <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} />
                 ))}
               </div>
+
             </div>
           </>
         )}
