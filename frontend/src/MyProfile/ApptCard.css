@@ -45,6 +45,11 @@
     cursor: pointer;
 }
 
+.icon-greyed-out {
+    color: grey;
+    pointer-events: none; 
+}
+
 .pastAppointment {
     background-color: #f0f0f0;
     color: #a0a0a0;
