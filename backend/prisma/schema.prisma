@@ -14,6 +14,7 @@ model User{
   password String
   role String
   patient   Patient?
+  physician Physician?
 }
 
 model Patient{
@@ -32,6 +33,8 @@ model Patient{
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
   appointments Appointment[]
+  physicianId    Int?
+  physician      Physician?    @relation(fields: [physicianId], references: [id])
 }
 
 model Appointment{
@@ -42,4 +45,11 @@ model Appointment{
   end_time        String
   patientId   Int
   patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model Physician {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patients  Patient[]
 }

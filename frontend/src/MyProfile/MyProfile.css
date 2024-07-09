@@ -69,6 +69,8 @@
     box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
     max-width: 90%;
     margin: auto;
+    background-color: white;
+    border-radius: 4px;
 }
 
 .apptHeadline{

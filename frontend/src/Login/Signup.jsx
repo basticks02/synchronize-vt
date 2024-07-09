@@ -25,7 +25,13 @@ export default function Signup() {
             alert("Sign Up Successful!")
             navigate('/login')
           } catch (error) {
-            console.error('Error signing up.', error.response ? error.response.data : error.message)
+            const errorMessage = error.response ? error.response.data.error : error.message;
+            if (errorMessage === 'A physician account already exists') {
+              alert('A physician account already exists. Only one physician account can be created.');
+            } else {
+              console.error('Error signing up.', errorMessage);
+              alert('Sign Up Failed: ' + errorMessage);
+            }
           }
         } else{
           alert("Please fill out all fields")

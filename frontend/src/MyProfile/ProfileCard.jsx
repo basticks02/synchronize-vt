@@ -4,7 +4,7 @@ import {UserContext} from '../UserContext'
 import api from '../api'
 import ProfileModal from './ProfileModal'
 
-export default function ProfileCard({patient, setPatient}) {
+export default function ProfileCard({patient, setPatient, showMenu = true}) {
   const {user, updateUser} = useContext(UserContext)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -74,15 +74,18 @@ export default function ProfileCard({patient, setPatient}) {
           <p>Complaint: {patient.complaint}</p>
         </div>
 
-        <span className='menu-container'>
-          <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
-          {menuOpen && (
-            <ul className='menu'>
-              <li className='Edit' onClick={handleEditProfile}>Edit</li>
-              <li className='Delete' onClick={handleDeleteProfile}>Delete</li>
-            </ul>
-          )}
-        </span>
+        {showMenu && (
+          <span className='menu-container'>
+            <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
+            {menuOpen && (
+              <ul className='menu'>
+                <li className='Edit' onClick={handleEditProfile}>Edit</li>
+                <li className='Delete' onClick={handleDeleteProfile}>Delete</li>
+              </ul>
+            )}
+          </span>
+        )}
+        
         <ProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setEditModalOpen(false)}

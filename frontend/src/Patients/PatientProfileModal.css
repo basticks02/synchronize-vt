@@ -1,0 +1,20 @@
+.close{
+    float: right;
+    scale: 200%;
+    color: red;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.close:hover{
+    text-shadow:0 4px 8px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+.patient-modal-content {
+    background: #fff;
+    padding: 20px 20px 60px 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 1200px;
+  }

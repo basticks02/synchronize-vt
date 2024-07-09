@@ -24,7 +24,26 @@ export default function ApptModal({isApptModalOpen, handleApptModalClose, handle
     const handleChange = (e) => {
         const { name, value } = e.target;
         setAppointmentData((prevData) => ({ ...prevData, [name]: value }));
-      };
+    };
+
+    const validateAppointment = () => {
+      const currentDate = new Date();
+      const appointmentDate = new Date(`${appointmentData.date}T${appointmentData.start_time}`);
+
+      if (appointmentDate < currentDate) {
+          alert('Cannot book an appointment in the past. Please select a future date and time.');
+          return false;
+      }
+      return true;
+    };
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if (validateAppointment()) {
+            handleSubmitAppointment(e, appointmentData);
+        }
+    };
+
 
     if (!isApptModalOpen) return null;
 
@@ -32,7 +51,7 @@ export default function ApptModal({isApptModalOpen, handleApptModalClose, handle
     <>
         <div className="modal-overlay">
             <div className="modal-content">
-                <form onSubmit={(e) => handleSubmitAppointment(e, appointmentData)}>
+                <form onSubmit={handleFormSubmit}>
                 <p>{title}</p>
                 <input name="title" placeholder="Title" value={appointmentData.title} onChange={handleChange} required />
                 <input name="date" placeholder="Date" type="date" value={appointmentData.date} onChange={handleChange} required />

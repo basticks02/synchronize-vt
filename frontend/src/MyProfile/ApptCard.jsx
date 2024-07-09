@@ -12,11 +12,16 @@ export default function ApptCard({appointment, handleDeleteAppointment, onEdit, 
         return `${formattedHour}:${minute} ${suffix}`;
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', { timeZone: 'UTC' });
+    };
+
     return (
         <>
             <div className={`cardContainer ${isPast ? 'pastAppointment' : ''}`}>
                 <div className='apptDate'>
-                    <p>{new Date(appointment.date).toLocaleDateString()}</p>
+                    <p>{formatDate(appointment.date)}</p>
                 </div>
                 <div className='apptTitle'>
                     <h3>{appointment.title}</h3>
@@ -25,8 +30,8 @@ export default function ApptCard({appointment, handleDeleteAppointment, onEdit, 
                     <p>{formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
                 </div>
                 <div className='apptContols'>
-                    <i className="fa-regular fa-trash-can" onClick={() => handleDeleteAppointment(appointment.id) }  ></i>
-                    <i className="fa-regular fa-pen-to-square" onClick={() => onEdit(appointment)}></i>
+                    <i className={`fa-regular fa-trash-can ${isPast ? 'icon-greyed-out' : ''}`} onClick={() => handleDeleteAppointment(appointment.id)}></i>
+                    <i className={`fa-regular fa-pen-to-square ${isPast ? 'icon-greyed-out' : ''}`} onClick={() => onEdit(appointment)}></i>
                 </div>
             </div>
         </>
