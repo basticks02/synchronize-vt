@@ -1,0 +1,36 @@
+
+
+.covid-container{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    margin-bottom: 30px;
+    padding-top: 30px;
+}
+
+.covid-usa,
+.covid-worldwide{
+    height: 80vh;
+    width: 49%;
+    max-height: 600px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+.covid-vaccines,
+.covid-history{
+    height: 60vh;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+h3{
+    text-align: center;
+    padding: 20px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
