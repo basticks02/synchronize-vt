@@ -375,20 +375,5 @@ router.get('/patients/:id/appointments', authenticateToken, async (req, res) => 
   }
 });
 
-//Deleting a particular patient profile
-router.delete('/patients/:id', authenticateToken, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const deletedProfile = await prisma.patient.delete({
-      where: { id: parseInt(id, 10) },
-    });
-    res.status(200).json(deletedProfile);
-  } catch (error) {
-    console.error('Error deleting patient profile:', error);
-    res.status(500).json({ error: 'Failed to delete patient profile' });
-  }
-});
-
-
 
 module.exports = router;

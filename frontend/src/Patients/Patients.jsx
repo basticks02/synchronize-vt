@@ -12,12 +12,15 @@ export default function Patients() {
   const [isProfileModalOpen, setProfileModalOpen] = useState(false)
   const [selectedPatientId, setSelectedPatientId] = useState(null)
 
-  //fetching all patients from the DB
+  //fetching all patients from the DB & necessary filtering
   useEffect(() => {
     const fetchPatients = async () => {
       try{
         const response = await api.get('api/user/patients', {withCredentials: true})
-        setPatients(response.data)
+        let patientsData = response.data
+        const deletedPatients = JSON.parse(localStorage.getItem('deletedPatients')) || [];
+        patientsData = patientsData.filter(patient => !deletedPatients.includes(patient.id));
+        setPatients(patientsData)
       } catch (error){
         console.error('Error fetching patients:', error.response ? ErrorEvent.response.data : error.message)
       }
@@ -25,13 +28,11 @@ export default function Patients() {
     fetchPatients()
   }, [])
 
-  const handlePatientDelete = async (id) => {
-    try {
-      await api.delete(`/api/user/patients/${id}`, { withCredentials: true });
-      setPatients(patients.filter(patient => patient.id !== id));
-    } catch (error) {
-      console.error('Error deleting patient:', error.response ? error.response.data : error.message);
-    }
+  const handlePatientDelete = (id) => {
+    const deletedPatients = JSON.parse(localStorage.getItem('deletedPatients')) || [];
+    deletedPatients.push(id);
+    localStorage.setItem('deletedPatients', JSON.stringify(deletedPatients));
+    setPatients(patients.filter(patient => patient.id !== id));
   };
 
   const handlePatientEdit = (patient) => {
