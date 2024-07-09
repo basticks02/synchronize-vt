@@ -10,9 +10,6 @@ export default function PatientCard({patient, onClick, onDelete}) {
         <div className='patient-name'>
             <p>{patient.firstname} {patient.lastname}</p>
         </div>
-        <div className='patient-controls'>
-            <i className="fa-regular fa-trash-can" onClick={(e) => { e.stopPropagation(); onDelete(patient.id); }}></i>
-        </div>
     </div>
   )
 }

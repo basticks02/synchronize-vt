@@ -21,7 +21,8 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
           setPatient(response.data);
 
           const appointmentsResponse = await api.get(`/api/user/patients/${patientId}/appointments`, { withCredentials: true });
-          setAppointments(appointmentsResponse.data);
+          const sortedAppointments = appointmentsResponse.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+          setAppointments(sortedAppointments);
         } catch (error) {
           console.error('Error fetching patient profile:', error.response ? error.response.data : error.message);
         }
@@ -36,12 +37,14 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
     try {
       if (selectedAppointment) {
         const response = await api.put(`/api/user/appointments/${selectedAppointment.id}`, appointmentData, { withCredentials: true });
-        setAppointments(appointments.map(appt => appt.id === response.data.id ? response.data : appt));
+        const updatedAppointments = appointments.map(appt => appt.id === response.data.id ? response.data : appt).sort((a, b) => new Date(a.date) - new Date(b.date));
+        setAppointments(updatedAppointments);
         setSelectedAppointment(null);
         alert('Appointment Updated Successfully');
       } else {
         const response = await api.post('/api/user/appointments', { ...appointmentData, patientId: patient.id }, { withCredentials: true });
-        setAppointments([...appointments, response.data]);
+        const updatedAppointments = [...appointments, response.data].sort((a, b) => new Date(a.date) - new Date(b.date));
+        setAppointments(updatedAppointments);
         alert('Appointment Created Successfully');
       }
       setApptModalOpen(false);
@@ -58,12 +61,16 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
 
   const handleDeleteAppointment = async (id) => {
     try {
-      await api.delete(`/api/user/appointments/${id}`, { withCredentials: true });
-      setAppointments(appointments.filter(appointment => appointment.id !== id));
+        await api.delete(`/api/user/appointments/${id}`, { withCredentials: true });
+        const updatedAppointments = appointments.filter(appointment => appointment.id !== id).sort((a, b) => new Date(a.date) - new Date(b.date));
+        setAppointments(updatedAppointments);
     } catch (error) {
-      console.error('Error deleting appointment:', error.response ? error.response.data : error.message);
+        console.error('Error deleting appointment:', error.response ? error.response.data : error.message);
     }
   };
+
+  const currentAppointments = appointments.filter(appointment => new Date(appointment.date) >= new Date());
+  const pastAppointments = appointments.filter(appointment => new Date(appointment.date) < new Date());
 
   if (!isOpen) return null;
 
@@ -99,8 +106,11 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
                 <div className='apptHeadline'>
                   <h3>Appointments</h3>
                 </div>
-                {appointments.map((appointment) => (
+                {currentAppointments.map((appointment) => (
                   <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} />
+                ))}
+                {pastAppointments.map((appointment) => (
+                  <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} isPast />
                 ))}
               </div>
 

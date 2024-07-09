@@ -17,23 +17,13 @@ export default function Patients() {
     const fetchPatients = async () => {
       try{
         const response = await api.get('api/user/patients', {withCredentials: true})
-        let patientsData = response.data
-        const deletedPatients = JSON.parse(localStorage.getItem('deletedPatients')) || [];
-        patientsData = patientsData.filter(patient => !deletedPatients.includes(patient.id));
-        setPatients(patientsData)
+        setPatients(response.data)
       } catch (error){
         console.error('Error fetching patients:', error.response ? ErrorEvent.response.data : error.message)
       }
     }
     fetchPatients()
   }, [])
-
-  const handlePatientDelete = (id) => {
-    const deletedPatients = JSON.parse(localStorage.getItem('deletedPatients')) || [];
-    deletedPatients.push(id);
-    localStorage.setItem('deletedPatients', JSON.stringify(deletedPatients));
-    setPatients(patients.filter(patient => patient.id !== id));
-  };
 
   const handlePatientEdit = (patient) => {
     setSelectedPatientId(patient.id);
@@ -70,8 +60,7 @@ export default function Patients() {
                   key ={patient.id}
                   patient={patient}
                   onClick={handlePatientClick}
-                  onEdit={handlePatientEdit}
-                  onDelete={handlePatientDelete}/>
+                  onEdit={handlePatientEdit}/>
               ))}
 
               <PatientProfileModal
