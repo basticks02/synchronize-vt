@@ -108,7 +108,7 @@ export default function Map() {
           legendRef.current.addTo(mapRef.current);
         }
 
-        mapRef.current.setView([10, 5], 6.3);
+        mapRef.current.setView([10, 5], 3);
 
       } catch (error) {
         console.error('Error fetching vaccine data:', error);

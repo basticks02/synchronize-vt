@@ -2,7 +2,8 @@ import './Discover.css'
 import React from 'react'
 import Navbar from '../Navbar/Navbar'
 import Map from './Map'
-import CovidUsa from './CovidUsa'
+import CovidNigeria from './CovidNigeria'
+import CovidWorldwide from './CovidWorldWide'
 
 export default function Discover() {
   return (
@@ -21,12 +22,17 @@ export default function Discover() {
 
             <section className='covid-resources'>
                 <div className='covid-container'>
-                    <div className='covid-usa'>
-                        <h3>Covid USA</h3>
-                        <CovidUsa/>
+                    <div className='covid-nigeria'>
+                        <div className='heading'>
+                            <h3>Covid Nigeria</h3>
+                        </div>
+                        <CovidNigeria/>
                     </div>
                     <div className='covid-worldwide'>
-                        <h3>Covid WorldWide</h3>
+                        <div className='heading'>
+                            <h3>Covid WorldWide</h3>
+                        </div>
+                        <CovidWorldwide/>
                     </div>
                 </div>
 
@@ -38,7 +44,9 @@ export default function Discover() {
                 </div>
 
                 <div className='covid-history'>
-                    <h3>Covid History</h3>
+                    <div className='heading'>
+                        <h3>Covid History</h3>
+                    </div>
                 </div>
             </section>
 

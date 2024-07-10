@@ -9,7 +9,7 @@
     padding-top: 30px;
 }
 
-.covid-usa,
+.covid-nigeria,
 .covid-worldwide{
     width: 49%;
     max-height: 600px;
@@ -26,7 +26,7 @@
     border-radius: 5px;
 }
 
-h3{
+.heading{
     text-align: center;
     padding: 20px;
     text-transform: uppercase;
