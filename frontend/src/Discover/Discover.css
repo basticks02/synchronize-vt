@@ -21,9 +21,12 @@
 .covid-history{
     width: 90%;
     margin: auto;
-    margin-bottom: 30px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
+}
+
+.covid-history{
+    padding: 50px;
 }
 
 .heading{
