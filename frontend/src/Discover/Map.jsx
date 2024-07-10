@@ -12,7 +12,7 @@ export default function Map() {
     if (mapRef.current) return;
 
     const maxBounds = [
-      [-45, -180],
+      [-85, -180],
       [85, 180]
     ];
 
@@ -20,7 +20,7 @@ export default function Map() {
       center: [20, 0], // Center the map to display all continents
       zoom: 3,
       minZoom: 3,      // Minimum zoom level
-      maxZoom: 5,      // Maximum zoom level
+      maxZoom: 8,      // Maximum zoom level
       maxBounds: maxBounds,
       maxBoundsViscosity: 1.0 // Ensures that the map cannot be zoomed out beyond the bounds
     });
@@ -86,9 +86,6 @@ export default function Map() {
           }
         }).addTo(mapRef.current);
 
-        // Fit the map to the geojson layer bounds
-        mapRef.current.fitBounds(geojsonLayer.getBounds());
-
         // Add legend to the map if it doesn't already exist
         if (!legendRef.current) {
           legendRef.current = L.control({ position: 'bottomright' });
@@ -110,6 +107,8 @@ export default function Map() {
 
           legendRef.current.addTo(mapRef.current);
         }
+
+        mapRef.current.setView([10, 5], 6.3);
 
       } catch (error) {
         console.error('Error fetching vaccine data:', error);
