@@ -23,7 +23,7 @@ export default function CovidHistory() {
 
     fetchData();
   }, []);
-
+  
   if (!data) return <div>Loading...</div>;
 
   const chartData = {

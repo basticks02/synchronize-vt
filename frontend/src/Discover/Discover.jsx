@@ -24,7 +24,7 @@ export default function Discover() {
             <section className='covid-resources'>
                 <div className='covid-vaccines'>
                     <div className='heading'>
-                        <h3>Covid Vaccines Worldwide</h3>
+                        <h3>Covid Vaccines Rolled Out Worldwide</h3>
                     </div>
                     <Map/>
                 </div>
