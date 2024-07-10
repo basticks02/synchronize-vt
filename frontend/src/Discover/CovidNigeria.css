@@ -1,0 +1,12 @@
+.covid-usa-complete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 40px;
+}
+
+.covid-usa-graph{
+    width: 350px;
+    height: 350px;
+}
