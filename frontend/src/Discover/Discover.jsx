@@ -1,8 +1,9 @@
 import './Discover.css'
 import React from 'react'
 import Navbar from '../Navbar/Navbar'
+import Map from './Map'
 
-export default function Locate() {
+export default function Discover() {
   return (
     <>
         <Navbar/>
@@ -29,6 +30,7 @@ export default function Locate() {
 
                 <div className='covid-vaccines'>
                     <h3>Covid Vaccines Worldwide</h3>
+                    <Map/>
                 </div>
 
                 <div className='covid-history'>
