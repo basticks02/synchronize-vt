@@ -5,6 +5,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser')
 const userRoutes = require('./user')
 const express = require('express');
+const http = require('http');
+const setupWebSocket = require('./websocket');
 
 const app = express()
 const port = 4000;
@@ -16,9 +18,11 @@ app.use(cors({
     credentials: true,
 }));
 
-
 app.use('/api/user', userRoutes)
 
-app.listen(port, () => {
+const server = http.createServer(app);
+setupWebSocket(server);
+
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
