@@ -5,6 +5,7 @@ import MyProfile from '../MyProfile/MyProfile'
 import Patients from '../Patients/Patients'
 import Discover from '../Discover/Discover'
 import Signup from '../Login/Signup'
+import Notifications from '../Notifications/Notifications'
 import './App.css'
 import {UserContext} from '../UserContext'
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/discover" element={<Discover />} />
             <Route path="/myprofile" element={user ? <MyProfile />: <Landing />} />
             <Route path="/patients" element={user? <Patients />: <Landing />} />
+            <Route path="/notifications" element={user? <Notifications />: <Landing />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

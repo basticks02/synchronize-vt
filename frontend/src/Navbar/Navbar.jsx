@@ -19,20 +19,21 @@ export default function Navbar() {
     }
   };
 
-  
+
   return (
         <nav className='navbar'>
           {user ? (
             <>
-              <Link to="/" onClick={handleLogout}>Logout</Link>
+              <Link to="/" onClick={handleLogout}>Sign Out</Link>
               <Link to="/">Home</Link>
               {user.role === 'patient' && <Link to="/myprofile">My Profile</Link>}
               {user.role !== 'patient' && <Link to="/patients">Patients</Link>}
+              <Link to="/notifications">Notifications</Link>
               <Link to="/discover">Discover</Link>
             </>
           ):(
             <>
-              <Link to="/login">Login</Link>
+              <Link to="/login">Sign In</Link>
               <Link to="/">Home</Link>
               <Link to="/discover">Discover</Link>
             </>
