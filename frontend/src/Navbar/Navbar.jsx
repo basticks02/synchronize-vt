@@ -33,7 +33,7 @@ export default function Navbar() {
           {user.role !== 'patient' && <Link to="/patients">Patients</Link>}
           <Link to="/notifications">Notifications
             {notification ?
-              <span className='notificationAlert'>! {notification.message.slice(0, 10)}...</span>
+              <span className='notificationAlert'>+1 {notification.message.slice(0, 10)}...</span>
               : null
             }
           </Link>

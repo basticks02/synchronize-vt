@@ -239,6 +239,7 @@ router.post('/appointments', authenticateToken, async (req, res) => {
   try {
     const patient = await prisma.patient.findUnique({
       where: { id: patientId },
+      include: { user: true },
     });
 
     if (!patient) {
@@ -262,12 +263,13 @@ router.post('/appointments', authenticateToken, async (req, res) => {
       },
     });
 
-    // console.log(userToWS[patientId])
-    // if(userToWS[patientId]){
-    //   userToWS[patientId]({
-    //     message: "You went to your profile"
-    //   })
-    // }
+    console.log(userToWS[patient.userId])
+    if(userToWS[patient.userId]){
+      userToWS[patient.userId]({
+        message: "New Appointment",
+        isNotification: true,
+      })
+    }
 
     res.status(201).json(newAppointment);
   } catch (error) {
