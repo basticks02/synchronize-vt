@@ -253,10 +253,20 @@ router.post('/appointments', authenticateToken, async (req, res) => {
           },
       });
 
+      const notification = await prisma.notification.create({
+        data: {
+          patientId: patient.id,
+          content: `New appointment created: ${title} on ${date}`
+        }
+      })
+
       // Broadcast notification
       const wss = getWebSocketServer()
       if (wss){
-        wss.broadcast({ type: 'new_appointment', message: `New appointment created for ${patient.firstname} ${patient.lastname}` });
+        wss.broadcast({
+          type: 'new_appointment',
+          message: `New appointment created for ${patient.firstname} ${patient.lastname}`,
+          patientId: patient.id });
       }
 
       res.status(201).json(newAppointment);
@@ -316,14 +326,45 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
           }
       });
 
+      const patient = await prisma.patient.findUnique({where: {id: updatedAppointment.patientId}})
+
+      const notification = await prisma.notification.create({
+        data: {
+          patientId: patient.id,
+          content: `New appointment created: ${title} on ${date}`
+        }
+      })
+
       // Broadcast notification
-      
-      req.wss.broadcast({ type: 'edit_appointment', message: `Appointment updated for ${updatedAppointment.patientId}` });
+      const wss = getWebSocketServer()
+      if (wss) {
+        wss.broadcast({
+          type: 'edit_appointment',
+          message: `Appointment updated for ${patient.firstname} ${patient.lastname}`,
+          patientId: patient.id });
+      }
 
       res.status(200).json(updatedAppointment);
   } catch (error) {
       console.error('Error updating appointment:', error);
       res.status(500).json({ error: 'Failed to update appointment' });
+  }
+});
+
+//getting notifications from the db
+router.get('/notifications/:patientId', authenticateToken, async (req, res) => {
+  const { patientId } = req.params;
+
+  try {
+    const notifications = await prisma.notification.findMany({
+      where: { patientId: parseInt(patientId, 10) },
+      orderBy: { timestamp: 'desc' },
+    });
+
+    res.status(200).json(notifications);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
   }
 });
 

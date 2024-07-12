@@ -6,8 +6,8 @@ import {WebSocketProvider } from './contexts/WebSocketContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <WebSocketProvider/>
+    <WebSocketProvider>
       <App />
-    <WebSocketProvider/>
+    </WebSocketProvider>
   </React.StrictMode>,
 )
