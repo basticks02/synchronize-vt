@@ -2,8 +2,6 @@ const express = require('express')
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
-const WebSocket = require('ws');
-const {getWebSocketServer} = require('./websocket');
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -237,32 +235,27 @@ router.post('/appointments', authenticateToken, async (req, res) => {
   const { title, date, start_time, end_time, patientId } = req.body;
 
   try {
-      const patient = await prisma.patient.findUnique({ where: { id: patientId } });
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientId },
+    });
 
-      if (!patient) {
-          return res.status(404).json({ error: 'Patient not found' });
-      }
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
 
-      const newAppointment = await prisma.appointment.create({
-          data: {
-              title,
-              date: new Date(date),
-              start_time,
-              end_time,
-              patientId: patient.id,
-          },
-      });
-
-      // Broadcast notification
-      const wss = getWebSocketServer()
-      if (wss){
-        wss.broadcast({ type: 'new_appointment', message: `New appointment created for ${patient.firstname} ${patient.lastname}` });
-      }
-
-      res.status(201).json(newAppointment);
+    const newAppointment = await prisma.appointment.create({
+      data: {
+        title,
+        date: new Date(date),
+        start_time,
+        end_time,
+        patientId: patient.id,
+      },
+    });
+    res.status(201).json(newAppointment);
   } catch (error) {
-      console.error('Error creating appointment:', error);
-      res.status(500).json({ error: 'Failed to create appointment' });
+    console.error('Error creating appointment:', error);
+    res.status(500).json({ error: 'Failed to create appointment' });
   }
 });
 
@@ -306,24 +299,19 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
   const { title, date, start_time, end_time } = req.body;
 
   try {
-      const updatedAppointment = await prisma.appointment.update({
-          where: { id: parseInt(id, 10) },
-          data: {
-              title,
-              date: new Date(date),
-              start_time,
-              end_time
-          }
-      });
-
-      // Broadcast notification
-      
-      req.wss.broadcast({ type: 'edit_appointment', message: `Appointment updated for ${updatedAppointment.patientId}` });
-
-      res.status(200).json(updatedAppointment);
+    const updatedAppointment = await prisma.appointment.update({
+      where: { id: parseInt(id, 10) },
+      data: {
+        title,
+        date: new Date(date),
+        start_time,
+        end_time
+      }
+    });
+    res.status(200).json(updatedAppointment);
   } catch (error) {
-      console.error('Error updating appointment:', error);
-      res.status(500).json({ error: 'Failed to update appointment' });
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ error: 'Failed to update appointment' });
   }
 });
 

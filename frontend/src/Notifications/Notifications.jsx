@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { WebSocketContext } from '../contexts/WebSocketContext';
-import Navbar from '../Navbar/Navbar';
-import NotificationCard from './NotificationCard';
+import React from 'react'
+import './Notifications.css'
+import Navbar from '../Navbar/Navbar'
+import NotificationCard from './NotificationCard'
 
 export default function Notifications() {
     const ws = useContext(WebSocketContext);

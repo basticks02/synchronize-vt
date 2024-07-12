@@ -35,7 +35,6 @@ model Patient{
   appointments Appointment[]
   physicianId    Int?
   physician      Physician?    @relation(fields: [physicianId], references: [id])
-  notifications Notification[]
 }
 
 model Appointment{
@@ -53,13 +52,4 @@ model Physician {
   userId    Int        @unique
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   patients  Patient[]
-}
-
-model Notification {
-  id        Int      @id @default(autoincrement())
-  content   String
-  timestamp DateTime @default(now())
-  read      Boolean  @default(false)
-  patientId Int
-  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
