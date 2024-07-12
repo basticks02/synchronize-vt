@@ -8,21 +8,21 @@ import './Notifications.css';
 
 export default function Notifications() {
     const ws = useContext(WebSocketContext);
-    const { user } = useContext(UserContext);
+    const { patient } = useContext(UserContext);
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        console.log('useEffect called')
+        console.log('useEffect called');
+        if (!patient) return;
+
         const fetchNotifications = async () => {
-            if (user && user.patient) {
-                console.log('Fetching notifications for user:', user);
-                try {
-                    const response = await api.get(`/api/user/notifications/${user.patient.id}`);
-                    console.log(response.data)
-                    setNotifications(response.data);
-                } catch (error) {
-                    console.error('Error fetching notifications:', error);
-                }
+            console.log('Fetching notifications for patient:', patient);
+            try {
+                const response = await api.get(`/api/user/notifications/${patient.id}`);
+                console.log('Notifications fetched:', response.data);
+                setNotifications(response.data);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
             }
         };
 
@@ -31,16 +31,28 @@ export default function Notifications() {
         if (ws) {
             ws.onmessage = (message) => {
                 const data = JSON.parse(message.data);
-                if (user && user.patient && data.patientId === user.patient.id) {
+                if (data.patientId === patient.id) {
                     setNotifications((prev) => [...prev, { content: data.message, timestamp: new Date().toISOString() }]);
+                    console.log('State after WebSocket message:', notifications);
                 }
             };
         }
-    }, [ws, user]);
+
+        return () => {
+            if (ws) {
+                ws.onmessage = null;
+            }
+        };
+    }, [ws, patient]);
+
+    if (!patient) {
+        console.log('Loading... Patient data is missing');
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
-            <Navbar/>
+            <Navbar />
             <main>
                 <section className="myprofilehero">
                     <video className="video-background" autoPlay loop muted>
@@ -51,9 +63,10 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification, index) => (
-                        <NotificationCard key={index} notification={notification} />
-                    ))}
+                    {notifications.map((notification, index) => {
+                        console.log('Rendering notification:', notification);
+                        return <NotificationCard key={index} notification={notification} />;
+                    })}
                 </section>
             </main>
         </>
