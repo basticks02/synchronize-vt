@@ -254,12 +254,21 @@ router.post('/appointments', authenticateToken, async (req, res) => {
         patientId: patient.id,
       },
     });
-    console.log(userToWS[patientId])
-    if(userToWS[patientId]){
-      userToWS[patientId]({
-        message: "You went to your profile"
-      })
-    }
+
+    const newNotification = await prisma.notification.create({
+      data: {
+        content: `New appointment created: ${title} on ${date}`,
+        patientId: patient.id,
+      },
+    });
+
+    // console.log(userToWS[patientId])
+    // if(userToWS[patientId]){
+    //   userToWS[patientId]({
+    //     message: "You went to your profile"
+    //   })
+    // }
+
     res.status(201).json(newAppointment);
   } catch (error) {
     console.error('Error creating appointment:', error);
@@ -300,6 +309,30 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete appointment' });
   }
 })
+
+//Getting notifications
+router.get('/notifications', authenticateToken, async (req, res) => {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const notifications = await prisma.notification.findMany({
+      where: { patientId: patient.id },
+      orderBy: { timestamp: 'desc' },
+    });
+
+    res.status(200).json(notifications);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+});
+
 
 //Editting an appointment
 router.put('/appointments/:id', authenticateToken, async (req, res) => {
