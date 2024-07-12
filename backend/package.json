@@ -9,9 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@prisma/client": "^5.16.1",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "connect-session-sequelize": "^7.1.7",
     "cookie-parser": "^1.4.6",
@@ -28,5 +28,6 @@
   },
   "devDependencies": {
     "prisma": "^5.16.1"
-  }
+  },
+  "description": ""
 }
