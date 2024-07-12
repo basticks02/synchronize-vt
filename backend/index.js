@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const userRoutes = require('./user')
 const express = require('express');
 const http = require('http');
-const setupWebSocket = require('./websocket');
+const {setupWebSocket} = require('./websocket');
 
 const app = express()
 const port = 4000;

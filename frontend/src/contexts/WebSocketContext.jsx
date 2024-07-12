@@ -1,11 +1,17 @@
-import React, { createContext, useEffect, useRef } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 
 export const WebSocketContext = createContext(null);
 
-export const WebSocketProvider = ({ children }) => {
+export const WebSocketProvider = ({ user, children }) => {
+    const [notification, setNotification] = useState(null)
     const ws = useRef(null);
 
+    const updatedNotification = (newVal) => {
+        setNotification(newVal)
+    }
+
     useEffect(() => {
+        if(!user) return
         console.log('mounting');
         ws.current = new WebSocket('ws://localhost:4000');
 
@@ -22,6 +28,10 @@ export const WebSocketProvider = ({ children }) => {
         };
 
         ws.current.onmessage = (message) => {
+            const messageJSON = JSON.parse(message.data)
+            if(messageJSON.isNotification) {
+                setNotification(messageJSON)
+            }
             console.log('WebSocket message received:', message);
         };
 
@@ -31,10 +41,10 @@ export const WebSocketProvider = ({ children }) => {
                 ws.current.close();
             }
         };
-    }, []);
+    }, [user]);
 
     return (
-        <WebSocketContext.Provider value={ws.current}>
+        <WebSocketContext.Provider value={{notification, updatedNotification} }>
             {children}
         </WebSocketContext.Provider>
     );

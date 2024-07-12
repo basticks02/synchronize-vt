@@ -7,9 +7,10 @@ import Discover from '../Discover/Discover'
 import Signup from '../Login/Signup'
 import Notifications from '../Notifications/Notifications'
 import './App.css'
-import {UserContext} from '../UserContext'
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
+import { UserContext } from '../UserContext'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import api from '../api'
+import { WebSocketProvider } from '../contexts/WebSocketContext'
 
 
 export default function App() {
@@ -26,9 +27,10 @@ export default function App() {
       try {
         const response = await api.get('/api/user/current', { withCredentials: true });
         updateUser(response.data.user);
+
       } catch (error) {
         console.error('Failed to fetch current user', error);
-        if (error.response && error.response.status === 401 ) {
+        if (error.response && error.response.status === 401) {
           updateUser(null);
         }
       }
@@ -38,21 +40,22 @@ export default function App() {
 
   return (
     <>
-      <UserContext.Provider value={{ user, updateUser }}>
-        <BrowserRouter>
-          <Routes>
-
-            <Route path="/" element={<Landing />} />
-            {/* <Route path="/" element={user ? <Landing /> : <Login />} /> N/B: To confirm that User is still logged in after page refresh */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/discover" element={<Discover />} />
-            <Route path="/myprofile" element={user ? <MyProfile />: <Landing />} />
-            <Route path="/patients" element={user? <Patients />: <Landing />} />
-            <Route path="/notifications" element={user? <Notifications />: <Landing />} />
-          </Routes>
-        </BrowserRouter>
-      </UserContext.Provider>
+      <WebSocketProvider user={user}>
+        <UserContext.Provider value={{ user, updateUser }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              {/* <Route path="/" element={user ? <Landing /> : <Login />} /> N/B: To confirm that User is still logged in after page refresh */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/discover" element={<Discover />} />
+              <Route path="/myprofile" element={user ? <MyProfile /> : <Landing />} />
+              <Route path="/patients" element={user ? <Patients /> : <Landing />} />
+              <Route path="/notifications" element={user ? <Notifications /> : <Landing />} />
+            </Routes>
+          </BrowserRouter>
+        </UserContext.Provider>
+      </WebSocketProvider>
     </>
   )
 }

@@ -1,24 +1,20 @@
-import React from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import './Notifications.css'
 import Navbar from '../Navbar/Navbar'
 import NotificationCard from './NotificationCard'
+import { WebSocketContext } from '../contexts/WebSocketContext';
 
 export default function Notifications() {
-    const ws = useContext(WebSocketContext);
+    const { updatedNotification } = useContext(WebSocketContext);
+    // TODO get notifications from db
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        if (ws) {
-            ws.onmessage = (message) => {
-                const data = JSON.parse(message.data);
-                setNotifications((prev) => [...prev, data]);
-            };
-        }
-    }, [ws]);
-
+        updatedNotification(null);
+    }, []);
     return (
         <>
-            <Navbar />
+            <Navbar/>
             <main>
                 <section className="myprofilehero">
                     <video className="video-background" autoPlay loop muted>
@@ -29,10 +25,9 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification, index) => {
-                        console.log('Rendering notification:', notification);
-                        return <NotificationCard key={index} notification={notification} />;
-                    })}
+                    {notifications.map((notification, index) => (
+                        <NotificationCard key={index} notification={notification} />
+                    ))}
                 </section>
             </main>
         </>

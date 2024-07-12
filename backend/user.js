@@ -2,6 +2,8 @@ const express = require('express')
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const {userToWS} = require('./websocket');
+
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -252,6 +254,12 @@ router.post('/appointments', authenticateToken, async (req, res) => {
         patientId: patient.id,
       },
     });
+    console.log(userToWS[patientId])
+    if(userToWS[patientId]){
+      userToWS[patientId]({
+        message: "You went to your profile"
+      })
+    }
     res.status(201).json(newAppointment);
   } catch (error) {
     console.error('Error creating appointment:', error);
