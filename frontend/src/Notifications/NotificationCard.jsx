@@ -8,7 +8,7 @@ export default function NotificationCard({notification}) {
             <i className="fa-regular fa-calendar"></i>
         </div>
         <div className='notification-title'>
-            <p>{notification.content}</p>
+            <p>{notification.message}</p>
         </div>
     </div>
 

@@ -7,10 +7,8 @@ import { UserProvider } from './UserContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <UserProvider>
-      <WebSocketProvider>
-        <App />
-      </WebSocketProvider>
-    </UserProvider>
+    <WebSocketProvider>
+      <App />
+    </WebSocketProvider>
   </React.StrictMode>,
 );
