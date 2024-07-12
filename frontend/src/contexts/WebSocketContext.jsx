@@ -6,9 +6,8 @@ export const WebSocketProvider = ({ children }) => {
     const ws = useRef(null);
 
     useEffect(() => {
-        const connectWebSocket = () => {
-            ws.current = new WebSocket('ws://localhost:4000');
-            console.log("mounting");
+        console.log('mounting');
+        ws.current = new WebSocket('ws://localhost:4000');
 
         ws.current.onopen = () => {
             console.log('WebSocket connected');
@@ -27,7 +26,7 @@ export const WebSocketProvider = ({ children }) => {
         };
 
         return () => {
-            console.log("Calling cleanup");
+            console.log('Calling cleanup');
             if (ws.current) {
                 ws.current.close();
             }
