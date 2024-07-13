@@ -26,10 +26,6 @@ export default function Notifications() {
         fetchNotifications();
     }, []);
 
-    // useEffect(() => {
-    //     updatedNotification(null);
-    // },[updatedNotification])
-
     const handleNotificationClick = async (id) => {
         try {
           await api.put(`/api/user/notifications/${id}/read`, {}, { withCredentials: true });

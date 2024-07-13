@@ -12,6 +12,24 @@ export default function Navbar() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await api.get('/api/user/notifications', { withCredentials: true });
+        const notifications = response.data;
+        const unreadNotifications = notifications.filter((n) => !n.read);
+        setUnreadNotifications(unreadNotifications);
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+      } catch (error) {
+        console.error('Error fetching notifications from DB:', error);
+      }
+    };
+
+    if (user) {
+      fetchNotifications();
+    }
+  }, [user]);
+
+  useEffect(() => {
     const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
     const unreadNotifications = storedNotifications.filter((n) => !n.read);
     setUnreadNotifications(unreadNotifications);
