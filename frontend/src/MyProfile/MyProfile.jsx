@@ -128,9 +128,6 @@ export default function MyProfile() {
         </section>
 
         <section className='appointments'>
-          <div className='createApptButton'>
-            <button onClick={handleApptModalOpen}> <i className="fa-solid fa-plus"></i></button>
-          </div>
           <ApptModal
             isApptModalOpen={isApptModalOpen}
             handleApptModalClose={handleApptModalClose}
@@ -146,7 +143,7 @@ export default function MyProfile() {
             {currentAppointments.map((appointment) => (
               <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} />
             ))}
-            
+
             {pastAppointments.map((appointment) => (
               <ApptCard key={appointment.id} appointment={appointment} handleDeleteAppointment={handleDeleteAppointment} onEdit={handleEditAppointment} isPast />
             ))}
