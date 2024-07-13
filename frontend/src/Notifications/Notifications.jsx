@@ -15,16 +15,20 @@ export default function Notifications() {
 
         const fetchNotifications = async () => {
             try {
-                const response = await api.get('/api/user/notifications'); // Adjust the API endpoint as needed
+                const response = await api.get('/api/user/notifications');
                 setNotifications(response.data);
+                localStorage.setItem('notifications', JSON.stringify(response.data));
             } catch (error) {
                 console.error('Error fetching notifications from DB:', error);
             }
         };
 
         fetchNotifications();
-        updatedNotification(null);
     }, []);
+
+    // useEffect(() => {
+    //     updatedNotification(null);
+    // },[updatedNotification])
 
     const handleNotificationClick = async (id) => {
         try {
@@ -34,7 +38,18 @@ export default function Notifications() {
               notification.id === id ? { ...notification, read: true } : notification
             )
           );
-          navigate('/myprofile')
+
+            //Updates local storage with read status
+            const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            const updatedNotifications = storedNotifications.map((notification) =>
+                notification.id === id ? { ...notification, read: true } : notification
+            );
+            localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+
+            //Clears live notifications
+            updatedNotification(null);
+
+            navigate('/myprofile')
         } catch (error) {
           console.error('Error marking notification as read:', error);
         }

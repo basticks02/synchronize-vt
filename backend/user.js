@@ -297,7 +297,6 @@ router.get('/appointments', authenticateToken, async (req, res) => {
   }
 })
 
-//Deleteing an appointment
 // Deleting an appointment
 router.delete('/appointments/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
@@ -320,7 +319,7 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
     // Create a new notification
     const newNotification = await prisma.notification.create({
       data: {
-        content: `Appointment deleted: ${appointment.title} on ${appointment.date}`,
+        content: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
         patientId: appointment.patientId,
       },
     });
@@ -329,7 +328,7 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
     console.log(userToWS[appointment.patient.userId]);
     if (userToWS[appointment.patient.userId]) {
       userToWS[appointment.patient.userId]({
-        message: `Appointment deleted: ${appointment.title} on ${appointment.date}`,
+        message: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
         isNotification: true,
       });
     }
@@ -413,7 +412,7 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
     // Create a new notification
     const newNotification = await prisma.notification.create({
       data: {
-        content: `Appointment updated: ${title} on ${date}`,
+        content: `Updated Appointment: ${title} on ${date}`,
         patientId: patient.id,
       },
     });

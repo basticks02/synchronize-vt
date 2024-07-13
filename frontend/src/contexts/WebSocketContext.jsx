@@ -8,6 +8,11 @@ export const WebSocketProvider = ({ user, children }) => {
 
     const updatedNotification = (newVal) => {
         setNotification(newVal)
+        if (newVal) {
+            const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            notifications.push(newVal);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
     }
 
     useEffect(() => {
@@ -31,6 +36,9 @@ export const WebSocketProvider = ({ user, children }) => {
             const messageJSON = JSON.parse(message.data)
             if(messageJSON.isNotification) {
                 setNotification(messageJSON)
+                const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+                notifications.push(messageJSON);
+                localStorage.setItem('notifications', JSON.stringify(notifications));
             }
             console.log('WebSocket message received:', message);
         };
