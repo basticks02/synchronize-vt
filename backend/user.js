@@ -298,19 +298,67 @@ router.get('/appointments', authenticateToken, async (req, res) => {
 })
 
 //Deleteing an appointment
+// Deleting an appointment
 router.delete('/appointments/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
 
-  try{
-    const deletedAppointment = await prisma.appointment.delete({
-      where: { id: parseInt(id) },
+  try {
+    // Find the appointment and its associated patient before deleting
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: parseInt(id, 10) },
+      include: { patient: true },
     });
+
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    const deletedAppointment = await prisma.appointment.delete({
+      where: { id: parseInt(id, 10) },
+    });
+
+    // Create a new notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        content: `Appointment deleted: ${appointment.title} on ${appointment.date}`,
+        patientId: appointment.patientId,
+      },
+    });
+
+    // Send notification via WebSocket
+    console.log(userToWS[appointment.patient.userId]);
+    if (userToWS[appointment.patient.userId]) {
+      userToWS[appointment.patient.userId]({
+        message: `Appointment deleted: ${appointment.title} on ${appointment.date}`,
+        isNotification: true,
+      });
+    }
+
     res.status(200).json(deletedAppointment);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to delete appointment' });
   }
-})
+});
+
+// Mark notification as read
+router.put('/notifications/:id/read', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedNotification = await prisma.notification.update({
+      where: { id: parseInt(id, 10) },
+      data: { read: true },
+    });
+
+    res.status(200).json(updatedNotification);
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    res.status(500).json({ error: 'Failed to mark notification as read' });
+  }
+});
+
+
 
 //Getting notifications
 router.get('/notifications', authenticateToken, async (req, res) => {
@@ -336,7 +384,7 @@ router.get('/notifications', authenticateToken, async (req, res) => {
 });
 
 
-//Editting an appointment
+// Editing an appointment
 router.put('/appointments/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { title, date, start_time, end_time } = req.body;
@@ -351,12 +399,41 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
         end_time
       }
     });
+
+    // Find the patient associated with this appointment
+    const patient = await prisma.patient.findUnique({
+      where: { id: updatedAppointment.patientId },
+      include: { user: true },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    // Create a new notification
+    const newNotification = await prisma.notification.create({
+      data: {
+        content: `Appointment updated: ${title} on ${date}`,
+        patientId: patient.id,
+      },
+    });
+
+    // Send notification via WebSocket
+    console.log(userToWS[patient.userId]);
+    if (userToWS[patient.userId]) {
+      userToWS[patient.userId]({
+        message: `Updated Appointment: ${title} on ${date}`,
+        isNotification: true,
+      });
+    }
+
     res.status(200).json(updatedAppointment);
   } catch (error) {
     console.error('Error updating appointment:', error);
     res.status(500).json({ error: 'Failed to update appointment' });
   }
 });
+
 
 //Fetching all patients data
 router.get('/patients', authenticateToken, async (req, res) => {

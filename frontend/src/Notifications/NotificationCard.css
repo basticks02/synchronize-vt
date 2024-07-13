@@ -11,3 +11,8 @@
     box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
+
+.notification-card.read {
+    background-color: #f0f0f0;
+    color: #a0a0a0;
+  }

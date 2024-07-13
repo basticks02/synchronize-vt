@@ -4,14 +4,14 @@ import Navbar from '../Navbar/Navbar'
 import NotificationCard from './NotificationCard'
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import api from '../api';
+import { useNavigate } from 'react-router-dom'
 
 export default function Notifications() {
     const { updatedNotification } = useContext(WebSocketContext);
-    // TODO get notifications from db
     const [notifications, setNotifications] = useState([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
-        updatedNotification(null);
 
         const fetchNotifications = async () => {
             try {
@@ -23,7 +23,23 @@ export default function Notifications() {
         };
 
         fetchNotifications();
+        updatedNotification(null);
     }, []);
+
+    const handleNotificationClick = async (id) => {
+        try {
+          await api.put(`/api/user/notifications/${id}/read`, {}, { withCredentials: true });
+          setNotifications((prevNotifications) =>
+            prevNotifications.map((notification) =>
+              notification.id === id ? { ...notification, read: true } : notification
+            )
+          );
+          navigate('/myprofile')
+        } catch (error) {
+          console.error('Error marking notification as read:', error);
+        }
+    };
+
 
     return (
         <>
@@ -38,8 +54,8 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification, index) => (
-                        <NotificationCard key={index} notification={notification.content} />
+                    {notifications.map((notification) => (
+                        <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)}/>
                     ))}
                 </section>
             </main>

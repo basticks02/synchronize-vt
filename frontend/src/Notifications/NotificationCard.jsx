@@ -1,18 +1,12 @@
 import React from 'react'
 import './NotificationCard.css'
-import { useNavigate } from 'react-router-dom'
 
-export default function NotificationCard({notification}) {
-  const navigate = useNavigate()
-
-  const handleNotificationClick = () => {
-    navigate('/myprofile')
-  }
+export default function NotificationCard({notification, onClick}) {
 
   return (
-    <div className='notification-card' onClick={handleNotificationClick}>
+    <div className={`notification-card ${notification.read ? 'read' : ''}`} onClick={onClick}>
         <div className='patient-name'>
-            <p>{notification}</p>
+            <p>{notification.content}</p>
         </div>
     </div>
 
