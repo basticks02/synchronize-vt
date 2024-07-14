@@ -92,12 +92,12 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid password' });
         }
 
-        const token = jwt.sign({id: user.id, email: user.email}, SECRET_KEY, {expiresIn: '1h'})
+        const token = jwt.sign({id: user.id, email: user.email, role: user.role}, SECRET_KEY, {expiresIn: '1h'})
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 3600000, //session set for 15 minutes. Originally 3600000
+            maxAge: 3600000, 
         });
 
         res.status(200).json({message:'Login Successsful', user})
@@ -166,6 +166,23 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         physicianId: physician.id
       }
     });
+
+    // Create a new notification for the physician
+    const newNotification = await prisma.notification.create({
+      data: {
+        content: `New patient profile created: ${firstname} ${lastname}`,
+        physicianId: physician.id,
+      },
+    });
+
+    // Send notification via WebSocket
+    if (userToWS[physician.userId]) {
+      userToWS[physician.userId]({
+        message: `New patient profile created: ${firstname} ${lastname}`,
+        isNotification: true,
+      });
+    }
+
     res.status(201).json(newPatient);
   } catch (error) {
     console.error('Error creating patient profile:', error);
@@ -263,7 +280,6 @@ router.post('/appointments', authenticateToken, async (req, res) => {
       },
     });
 
-    console.log(userToWS[patient.userId])
     if(userToWS[patient.userId]){
       userToWS[patient.userId]({
         message: "New Appointment",
@@ -325,7 +341,6 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
     });
 
     // Send notification via WebSocket
-    console.log(userToWS[appointment.patient.userId]);
     if (userToWS[appointment.patient.userId]) {
       userToWS[appointment.patient.userId]({
         message: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
@@ -359,21 +374,38 @@ router.put('/notifications/:id/read', authenticateToken, async (req, res) => {
 
 
 
-//Getting notifications
+// Getting notifications
 router.get('/notifications', authenticateToken, async (req, res) => {
   try {
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id },
-    });
+    let notifications = [];
 
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
+    if (req.user.role === 'patient') {
+      const patient = await prisma.patient.findUnique({
+        where: { userId: req.user.id },
+      });
+
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient not found' });
+      }
+
+      notifications = await prisma.notification.findMany({
+        where: { patientId: patient.id },
+        orderBy: { timestamp: 'desc' },
+      });
+    } else if (req.user.role === 'physician') {
+      const physician = await prisma.physician.findUnique({
+        where: { userId: req.user.id },
+      });
+
+      if (!physician) {
+        return res.status(404).json({ error: 'Physician not found' });
+      }
+
+      notifications = await prisma.notification.findMany({
+        where: { physicianId: physician.id },
+        orderBy: { timestamp: 'desc' },
+      });
     }
-
-    const notifications = await prisma.notification.findMany({
-      where: { patientId: patient.id },
-      orderBy: { timestamp: 'desc' },
-    });
 
     res.status(200).json(notifications);
   } catch (error) {
@@ -381,6 +413,8 @@ router.get('/notifications', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch notifications' });
   }
 });
+
+
 
 
 // Editing an appointment
@@ -418,7 +452,6 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
     });
 
     // Send notification via WebSocket
-    console.log(userToWS[patient.userId]);
     if (userToWS[patient.userId]) {
       userToWS[patient.userId]({
         message: `Updated Appointment: ${title} on ${date}`,

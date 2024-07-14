@@ -15,7 +15,7 @@ export default function Notifications() {
 
         const fetchNotifications = async () => {
             try {
-                const response = await api.get('/api/user/notifications');
+                const response = await api.get('/api/user/notifications', {withCredentials: true});
                 setNotifications(response.data);
                 localStorage.setItem('notifications', JSON.stringify(response.data));
             } catch (error) {
