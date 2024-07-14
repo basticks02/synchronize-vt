@@ -21,11 +21,15 @@ export default function Navbar() {
         localStorage.setItem('notifications', JSON.stringify(notifications));
       } catch (error) {
         console.error('Error fetching notifications from DB:', error);
+        localStorage.setItem('notifications', JSON.stringify([]))
       }
     };
 
     if (user) {
       fetchNotifications();
+    } else {
+      setUnreadNotifications([]);
+      localStorage.setItem('notifications', JSON.stringify([]));
     }
   }, [user]);
 
@@ -39,6 +43,8 @@ export default function Navbar() {
     try {
       await api.post('/api/user/logout', {}, { withCredentials: true });
       updateUser(null);
+      setUnreadNotifications([])
+      localStorage.removeItem('notifications');
       navigate('/');
       alert("Successfully Logged Out")
     } catch (error) {
