@@ -5,11 +5,13 @@ import NotificationCard from './NotificationCard'
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import api from '../api';
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../UserContext';
 
 export default function Notifications() {
     const { updatedNotification } = useContext(WebSocketContext);
     const [notifications, setNotifications] = useState([]);
     const navigate = useNavigate()
+    const {user} = useContext(UserContext)
 
     useEffect(() => {
 
@@ -45,7 +47,11 @@ export default function Notifications() {
             //Clears live notifications
             updatedNotification(null);
 
-            navigate('/myprofile')
+            if (user.role === 'physician') {
+                navigate('/patients');
+            } else if (user.role === 'patient') {
+                navigate('/myprofile');
+            }
         } catch (error) {
           console.error('Error marking notification as read:', error);
         }
