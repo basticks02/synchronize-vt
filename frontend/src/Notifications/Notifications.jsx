@@ -3,15 +3,55 @@ import './Notifications.css'
 import Navbar from '../Navbar/Navbar'
 import NotificationCard from './NotificationCard'
 import { WebSocketContext } from '../contexts/WebSocketContext';
+import api from '../api';
+import { useNavigate } from 'react-router-dom'
 
 export default function Notifications() {
     const { updatedNotification } = useContext(WebSocketContext);
-    // TODO get notifications from db
     const [notifications, setNotifications] = useState([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
-        updatedNotification(null);
+
+        const fetchNotifications = async () => {
+            try {
+                const response = await api.get('/api/user/notifications');
+                setNotifications(response.data);
+                localStorage.setItem('notifications', JSON.stringify(response.data));
+            } catch (error) {
+                console.error('Error fetching notifications from DB:', error);
+            }
+        };
+
+        fetchNotifications();
     }, []);
+
+    const handleNotificationClick = async (id) => {
+        try {
+          await api.put(`/api/user/notifications/${id}/read`, {}, { withCredentials: true });
+          setNotifications((prevNotifications) =>
+            prevNotifications.map((notification) =>
+              notification.id === id ? { ...notification, read: true } : notification
+            )
+          );
+
+            //Updates local storage with read status
+            const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            const updatedNotifications = storedNotifications.map((notification) =>
+                notification.id === id ? { ...notification, read: true } : notification
+            );
+            localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+
+            //Clears live notifications
+            updatedNotification(null);
+
+            navigate('/myprofile')
+        } catch (error) {
+          console.error('Error marking notification as read:', error);
+        }
+    };
+
+
     return (
         <>
             <Navbar/>
@@ -25,8 +65,8 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification, index) => (
-                        <NotificationCard key={index} notification={notification} />
+                    {notifications.map((notification) => (
+                        <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)}/>
                     ))}
                 </section>
             </main>

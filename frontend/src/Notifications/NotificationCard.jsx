@@ -1,11 +1,12 @@
 import React from 'react'
 import './NotificationCard.css'
 
-export default function NotificationCard({notification}) {
+export default function NotificationCard({notification, onClick}) {
+
   return (
-    <div className='notification-card'>
+    <div className={`notification-card ${notification.read ? 'read' : ''}`} onClick={onClick}>
         <div className='patient-name'>
-            <p>{notification}</p>
+            <p>{notification.content}</p>
         </div>
     </div>
 
