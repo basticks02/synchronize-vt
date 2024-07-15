@@ -5,17 +5,19 @@ import NotificationCard from './NotificationCard'
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import api from '../api';
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../UserContext';
 
 export default function Notifications() {
-    const { updatedNotification } = useContext(WebSocketContext);
+    const { updatedNotification, notification } = useContext(WebSocketContext);
     const [notifications, setNotifications] = useState([]);
     const navigate = useNavigate()
+    const {user} = useContext(UserContext)
 
     useEffect(() => {
 
         const fetchNotifications = async () => {
             try {
-                const response = await api.get('/api/user/notifications');
+                const response = await api.get('/api/user/notifications', {withCredentials: true});
                 setNotifications(response.data);
                 localStorage.setItem('notifications', JSON.stringify(response.data));
             } catch (error) {
@@ -25,6 +27,15 @@ export default function Notifications() {
 
         fetchNotifications();
     }, []);
+
+    useEffect(() => {
+        if (notification) {
+            setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+            const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            storedNotifications.unshift(notification);
+            localStorage.setItem('notifications', JSON.stringify(storedNotifications));
+        }
+    }, [notification]);
 
     const handleNotificationClick = async (id) => {
         try {
@@ -45,7 +56,11 @@ export default function Notifications() {
             //Clears live notifications
             updatedNotification(null);
 
-            navigate('/myprofile')
+            if (user.role === 'physician') {
+                navigate('/patients');
+            } else if (user.role === 'patient') {
+                navigate('/myprofile');
+            }
         } catch (error) {
           console.error('Error marking notification as read:', error);
         }
@@ -65,11 +80,19 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification) => (
-                        <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)}/>
-                    ))}
+                    {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                            <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)} />
+                        ))
+                    ) : (
+                        <p>No notifications found.</p>
+                    )}
                 </section>
             </main>
+
+            <footer>
+                <p>Developed by Synchronize</p>
+            </footer>
         </>
     );
 }

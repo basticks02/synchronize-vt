@@ -53,6 +53,7 @@ model Physician {
   userId    Int        @unique
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   patients  Patient[]
+  notifications Notification[]
 }
 
 model Notification {
@@ -60,6 +61,8 @@ model Notification {
   content     String
   timestamp   DateTime @default(now())
   read        Boolean  @default(false)
-  patientId   Int
-  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId   Int?
+  patient     Patient?  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  physicianId   Int?
+  physician     Physician? @relation(fields: [physicianId], references: [id], onDelete: Cascade)
 }

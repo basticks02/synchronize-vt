@@ -6,7 +6,7 @@ export default function NotificationCard({notification, onClick}) {
   return (
     <div className={`notification-card ${notification.read ? 'read' : ''}`} onClick={onClick}>
         <div className='patient-name'>
-            <p>{notification.content}</p>
+            <p>{notification.content || notification.message}</p>
         </div>
     </div>
 
