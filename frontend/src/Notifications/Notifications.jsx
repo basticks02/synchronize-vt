@@ -71,11 +71,19 @@ export default function Notifications() {
                     </div>
                 </section>
                 <section className='notification-list'>
-                    {notifications.map((notification) => (
-                        <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)}/>
-                    ))}
+                    {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                            <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)} />
+                        ))
+                    ) : (
+                        <p>No notifications found.</p>
+                    )}
                 </section>
             </main>
+
+            <footer>
+                <p>Developed by Synchronize</p>
+            </footer>
         </>
     );
 }

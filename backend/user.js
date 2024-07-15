@@ -97,7 +97,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 3600000, 
+            maxAge: 3600000,
         });
 
         res.status(200).json({message:'Login Successsful', user})
@@ -208,46 +208,160 @@ router.get('/myprofile', authenticateToken, async (req, res) => {
   }
 });
 
-//Delete Patient Profile
+// Delete Patient Profile
 router.delete('/myprofile', authenticateToken, async (req, res) => {
-  try{
-    const deletedProfile = await prisma.patient.delete({
-      where: {userId: req.user.id}
-    })
-    return res.status(200).json(deletedProfile)
-  } catch (error) {
-    console.error('Error fetching patient profile:', error);
-    res.status(500).json({ error: 'Failed to fetch patient profile' });
-  }
-})
+  try {
+    // Find the patient profile to be deleted
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id },
+      include: { physician: true }
+    });
 
-//Edit Patient Profile
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    // Delete the patient profile
+    const deletedProfile = await prisma.patient.delete({
+      where: { userId: req.user.id }
+    });
+
+    // Create a new notification for the physician
+    const physician = patient.physician;
+    if (physician) {
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: `Patient profile deleted: ${patient.firstname} ${patient.lastname}`,
+          physicianId: physician.id,
+        },
+      });
+
+      // Send notification via WebSocket
+      if (userToWS[physician.userId]) {
+        userToWS[physician.userId]({
+          message: `Patient profile deleted: ${patient.firstname} ${patient.lastname}`,
+          isNotification: true,
+        });
+      }
+    }
+
+    return res.status(200).json(deletedProfile);
+  } catch (error) {
+    console.error('Error deleting patient profile:', error);
+    res.status(500).json({ error: 'Failed to delete patient profile' });
+  }
+});
+
+
+// Edit Patient Profile
 router.put('/myprofile', authenticateToken, async (req, res) => {
   const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, complaint } = req.body;
 
   try {
+    // Fetch current patient data
+    const currentPatient = await prisma.patient.findUnique({
+      where: { userId: req.user.id },
+      include: { physician: true }
+    });
+
+    if (!currentPatient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    // Prepare the updated data
+    const updatedData = {
+      firstname,
+      lastname,
+      place_of_birth,
+      date_of_birth: new Date(date_of_birth),
+      sex,
+      height: parseInt(height, 10),
+      weight: parseInt(weight, 10),
+      occupation,
+      address,
+      phone,
+      complaint,
+    };
+
+    // Update the patient profile
     const updatedPatient = await prisma.patient.update({
       where: { userId: req.user.id },
-      data: {
-        firstname,
-        lastname,
-        place_of_birth,
-        date_of_birth: new Date(date_of_birth),
-        sex,
-        height: parseInt(height, 10),
-        weight: parseInt(weight, 10),
-        occupation,
-        address,
-        phone,
-        complaint,
-      }
+      data: updatedData
     });
+
+    const physician = currentPatient.physician;
+
+    // Check what fields were changed and create notifications
+    const changes = [];
+    for (const [key, value] of Object.entries(updatedData)) {
+      if (currentPatient[key] !== value) {
+        changes.push(key);
+      }
+    }
+
+    // Notification messages for specific changes
+    const changeMessages = {
+      firstname: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their name.`,
+      lastname: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their name.`,
+      place_of_birth: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their place of birth.`,
+      occupation: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their occupation.`,
+      address: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their address.`,
+      complaint: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their complaint.`,
+    };
+
+    // Create notifications based on changes
+    let specificNotificationSent = false;
+    for (const change of changes) {
+      if (changeMessages[change]) {
+        specificNotificationSent = true;
+        const message = changeMessages[change];
+
+        if (physician) {
+          const newNotification = await prisma.notification.create({
+            data: {
+              content: message,
+              physicianId: physician.id,
+            },
+          });
+
+          // Send notification via WebSocket
+          if (userToWS[physician.userId]) {
+            userToWS[physician.userId]({
+              message: message,
+              isNotification: true,
+            });
+          }
+        }
+      }
+    }
+
+    // If no specific change notification was sent, send a generic update notification
+    if (!specificNotificationSent && physician) {
+      const genericMessage = `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} updated their profile.`;
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: genericMessage,
+          physicianId: physician.id,
+        },
+      });
+
+      // Send notification via WebSocket
+      if (userToWS[physician.userId]) {
+        userToWS[physician.userId]({
+          message: genericMessage,
+          isNotification: true,
+        });
+      }
+    }
+
     res.status(200).json(updatedPatient);
   } catch (error) {
     console.error('Error updating patient profile:', error);
     res.status(500).json({ error: 'Failed to update patient profile' });
   }
 });
+
+
 
 //Posting a new Appointment
 router.post('/appointments', authenticateToken, async (req, res) => {
