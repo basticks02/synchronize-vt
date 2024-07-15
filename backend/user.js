@@ -500,6 +500,24 @@ router.get('/notifications', authenticateToken, async (req, res) => {
   }
 });
 
+// Toggle notification status for a patient
+router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const patient = await findPatient(req.user.id);
+    const updatedPatient = await prisma.patient.update({
+      where: { id: parseInt(id, 10) },
+      data: { notificationsOn: !patient.notificationsOn },
+    });
+
+    res.status(200).json(updatedPatient);
+  } catch (error) {
+    console.error('Error toggling notifications:', error);
+    res.status(500).json({ error: 'Failed to toggle notifications' });
+  }
+});
+
 
 
 
