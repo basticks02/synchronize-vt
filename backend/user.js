@@ -28,6 +28,20 @@ const authenticateToken = (req, res, next) => {
     });
   };
 
+//Find patient helper function
+  const findPatient = async (userId, includePhysician = false) => {
+    const include = includePhysician ? { include: { physician: true } } : {};
+    const patient = await prisma.patient.findUnique({
+      where: { userId },
+      ...include
+    });
+    if (!patient) {
+      throw new Error('Patient profile not found');
+    }
+    return patient;
+  };
+
+
 //Signup
 router.post('/signup', async (req, res) => {
     const { username, email, password, role } = req.body;
@@ -193,14 +207,7 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
 // Fetching Patient Profile
 router.get('/myprofile', authenticateToken, async (req, res) => {
   try {
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id }
-    });
-
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient profile not found' });
-    }
-
+    const patient = await findPatient(req.user.id);
     res.status(200).json(patient);
   } catch (error) {
     console.error('Error fetching patient profile:', error);
@@ -212,15 +219,7 @@ router.get('/myprofile', authenticateToken, async (req, res) => {
 router.delete('/myprofile', authenticateToken, async (req, res) => {
   try {
     // Find the patient profile to be deleted
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id },
-      include: { physician: true }
-    });
-
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient profile not found' });
-    }
-
+    const patient = await findPatient(req.user.id);
     // Delete the patient profile
     const deletedProfile = await prisma.patient.delete({
       where: { userId: req.user.id }
@@ -259,15 +258,7 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
 
   try {
     // Fetch current patient data
-    const currentPatient = await prisma.patient.findUnique({
-      where: { userId: req.user.id },
-      include: { physician: true }
-    });
-
-    if (!currentPatient) {
-      return res.status(404).json({ error: 'Patient profile not found' });
-    }
-
+    const currentPatient = await findPatient(req.user.id, true);
     // Prepare the updated data
     const updatedData = {
       firstname,
@@ -368,15 +359,7 @@ router.post('/appointments', authenticateToken, async (req, res) => {
   const { title, date, start_time, end_time, patientId } = req.body;
 
   try {
-    const patient = await prisma.patient.findUnique({
-      where: { id: patientId },
-      include: { user: true },
-    });
-
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
-    }
-
+    const patient = await findPatient(patientId);
     const newAppointment = await prisma.appointment.create({
       data: {
         title,
@@ -411,16 +394,12 @@ router.post('/appointments', authenticateToken, async (req, res) => {
 //Getting all appointments
 router.get('/appointments', authenticateToken, async (req, res) => {
   try {
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id },
-      include: { appointments: true }
+    const patient = await findPatient(req.user.id);
+    const appointments = await prisma.appointment.findMany({
+      where: { patientId: patient.id },
+      orderBy: { date: 'asc' }
     });
-
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient profile not found' });
-    }
-
-    res.status(200).json(patient.appointments);
+    res.status(200).json(appointments);
   } catch (error) {
     console.error('Error fetching appointments:', error);
     res.status(500).json({ error: 'Failed to fetch appointments' });
@@ -494,14 +473,7 @@ router.get('/notifications', authenticateToken, async (req, res) => {
     let notifications = [];
 
     if (req.user.role === 'patient') {
-      const patient = await prisma.patient.findUnique({
-        where: { userId: req.user.id },
-      });
-
-      if (!patient) {
-        return res.status(404).json({ error: 'Patient not found' });
-      }
-
+      const patient = await findPatient(req.user.id);
       notifications = await prisma.notification.findMany({
         where: { patientId: patient.id },
         orderBy: { timestamp: 'desc' },
@@ -548,15 +520,7 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
     });
 
     // Find the patient associated with this appointment
-    const patient = await prisma.patient.findUnique({
-      where: { id: updatedAppointment.patientId },
-      include: { user: true },
-    });
-
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
-    }
-
+    const patient = await findPatient(req.user.id);
     // Create a new notification
     const newNotification = await prisma.notification.create({
       data: {
