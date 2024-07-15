@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './ApptCard.css'
+import { UserContext } from '../UserContext';
 
 export default function ApptCard({appointment, handleDeleteAppointment, onEdit, isPast}) {
+    const {user} = useContext(UserContext)
 
     //formatting for time (since  it was stored as a string in the db)
     const formatTime = (timeString) => {
@@ -29,10 +31,12 @@ export default function ApptCard({appointment, handleDeleteAppointment, onEdit, 
                 <div className='apptTime'>
                     <p>{formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
                 </div>
-                <div className='apptContols'>
+                {user.role === 'physician' && (
+                    <div className='apptControls'>
                     <i className={`fa-regular fa-trash-can ${isPast ? 'icon-greyed-out' : ''}`} onClick={() => handleDeleteAppointment(appointment.id)}></i>
                     <i className={`fa-regular fa-pen-to-square ${isPast ? 'icon-greyed-out' : ''}`} onClick={() => onEdit(appointment)}></i>
-                </div>
+                    </div>
+                )}
             </div>
         </>
     )
