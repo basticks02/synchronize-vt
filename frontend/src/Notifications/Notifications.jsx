@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../UserContext';
 
 export default function Notifications() {
-    const { updatedNotification } = useContext(WebSocketContext);
+    const { updatedNotification, notification } = useContext(WebSocketContext);
     const [notifications, setNotifications] = useState([]);
     const navigate = useNavigate()
     const {user} = useContext(UserContext)
@@ -27,6 +27,15 @@ export default function Notifications() {
 
         fetchNotifications();
     }, []);
+
+    useEffect(() => {
+        if (notification) {
+            setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+            const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            storedNotifications.unshift(notification);
+            localStorage.setItem('notifications', JSON.stringify(storedNotifications));
+        }
+    }, [notification]);
 
     const handleNotificationClick = async (id) => {
         try {
