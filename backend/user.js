@@ -177,7 +177,8 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         phone,
         complaint,
         userId: req.user.id,
-        physicianId: physician.id
+        physicianId: physician.id,
+        notificationsOn: true
       }
     });
 
@@ -300,48 +301,50 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
       complaint: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their complaint.`,
     };
 
-    // Create notifications based on changes
+    // Create notifications based on changes if notifications are enabled for the patient
     let specificNotificationSent = false;
-    for (const change of changes) {
-      if (changeMessages[change]) {
-        specificNotificationSent = true;
-        const message = changeMessages[change];
+    if (currentPatient.notificationsOn) {
+      for (const change of changes) {
+        if (changeMessages[change]) {
+          specificNotificationSent = true;
+          const message = changeMessages[change];
 
-        if (physician) {
-          const newNotification = await prisma.notification.create({
-            data: {
-              content: message,
-              physicianId: physician.id,
-            },
-          });
-
-          // Send notification via WebSocket
-          if (userToWS[physician.userId]) {
-            userToWS[physician.userId]({
-              message: message,
-              isNotification: true,
+          if (physician) {
+            const newNotification = await prisma.notification.create({
+              data: {
+                content: message,
+                physicianId: physician.id,
+              },
             });
+
+            // Send notification via WebSocket
+            if (userToWS[physician.userId]) {
+              userToWS[physician.userId]({
+                message: message,
+                isNotification: true,
+              });
+            }
           }
         }
       }
-    }
 
-    // If no specific change notification was sent, send a generic update notification
-    if (!specificNotificationSent && physician) {
-      const genericMessage = `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} updated their profile.`;
-      const newNotification = await prisma.notification.create({
-        data: {
-          content: genericMessage,
-          physicianId: physician.id,
-        },
-      });
-
-      // Send notification via WebSocket
-      if (userToWS[physician.userId]) {
-        userToWS[physician.userId]({
-          message: genericMessage,
-          isNotification: true,
+      // If no specific change notification was sent, send a generic update notification
+      if (!specificNotificationSent && physician) {
+        const genericMessage = `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} updated their profile.`;
+        const newNotification = await prisma.notification.create({
+          data: {
+            content: genericMessage,
+            physicianId: physician.id,
+          },
         });
+
+        // Send notification via WebSocket
+        if (userToWS[physician.userId]) {
+          userToWS[physician.userId]({
+            message: genericMessage,
+            isNotification: true,
+          });
+        }
       }
     }
 
@@ -351,6 +354,7 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to update patient profile' });
   }
 });
+
 
 
 
@@ -505,7 +509,14 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
   const { id } = req.params;
 
   try {
-    const patient = await findPatient(req.user.id);
+    const patient = await prisma.patient.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
     const updatedPatient = await prisma.patient.update({
       where: { id: parseInt(id, 10) },
       data: { notificationsOn: !patient.notificationsOn },
@@ -517,6 +528,7 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
     res.status(500).json({ error: 'Failed to toggle notifications' });
   }
 });
+
 
 
 

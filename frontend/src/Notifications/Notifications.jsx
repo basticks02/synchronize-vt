@@ -18,8 +18,9 @@ export default function Notifications() {
         const fetchNotifications = async () => {
             try {
                 const response = await api.get('/api/user/notifications', {withCredentials: true});
-                setNotifications(response.data);
-                localStorage.setItem('notifications', JSON.stringify(response.data));
+                const filteredNotifications = response.data.filter(notif => notif.notificationsOn !== false);
+                setNotifications(filteredNotifications);
+                localStorage.setItem('notifications', JSON.stringify(filteredNotifications));
             } catch (error) {
                 console.error('Error fetching notifications from DB:', error);
             }
@@ -29,7 +30,7 @@ export default function Notifications() {
     }, []);
 
     useEffect(() => {
-        if (notification) {
+        if (notification && notification.notificationsOn !== false) {
             setNotifications((prevNotifications) => [notification, ...prevNotifications]);
             const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
             storedNotifications.unshift(notification);
@@ -82,7 +83,7 @@ export default function Notifications() {
                 <section className='notification-list'>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (
-                            <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)} />
+                        <NotificationCard key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification.id)} />
                         ))
                     ) : (
                         <p>No notifications found.</p>
