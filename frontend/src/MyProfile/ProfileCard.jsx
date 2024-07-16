@@ -8,6 +8,7 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
   const {user, updateUser} = useContext(UserContext)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [notificationsOn, setNotificationsOn] = useState(patient.notificationsOn);
 
 
   if (!patient) return <div></div>
@@ -19,6 +20,15 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
   const handleEditProfile = () => {
     setEditModalOpen(true);
     setMenuOpen(false);
+  };
+
+  const toggleNotifications = async () => {
+    try {
+      const response = await api.put(`/api/user/patients/${patient.id}/toggle-notifications`, {}, { withCredentials: true });
+      setNotificationsOn(response.data.notificationsOn);
+    } catch (error) {
+      console.error('Error toggling notifications:', error.response ? error.response.data : error.message);
+    }
   };
 
   //Update patient profile
@@ -79,13 +89,16 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
             <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
             {menuOpen && (
               <ul className='menu'>
+                <li className='notifications-patient' onClick={toggleNotifications}>
+                  <i className={`fa-regular ${notificationsOn ? 'fa-bell' : 'fa-bell-slash'}`}></i>
+                </li>
                 <li className='Edit' onClick={handleEditProfile}>Edit</li>
                 <li className='Delete' onClick={handleDeleteProfile}>Delete</li>
               </ul>
             )}
           </span>
         )}
-        
+
         <ProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setEditModalOpen(false)}

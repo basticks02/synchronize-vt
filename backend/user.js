@@ -374,18 +374,20 @@ router.post('/appointments', authenticateToken, async (req, res) => {
       },
     });
 
-    const newNotification = await prisma.notification.create({
-      data: {
-        content: `New appointment created: ${title} on ${date}`,
-        patientId: patient.id,
-      },
-    });
+    if (patient.notificationsOn){
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: `New appointment created: ${title} on ${date}`,
+          patientId: patient.id,
+        },
+      });
 
-    if(userToWS[patient.userId]){
-      userToWS[patient.userId]({
-        message: "New Appointment",
-        isNotification: true,
-      })
+      if(userToWS[patient.userId]){
+        userToWS[patient.userId]({
+          message: "New Appointment",
+          isNotification: true,
+        })
+      }
     }
 
     res.status(201).json(newAppointment);
@@ -394,6 +396,7 @@ router.post('/appointments', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to create appointment' });
   }
 });
+
 
 //Getting all appointments
 router.get('/appointments', authenticateToken, async (req, res) => {
@@ -429,20 +432,23 @@ router.delete('/appointments/:id', authenticateToken, async (req, res) => {
       where: { id: parseInt(id, 10) },
     });
 
-    // Create a new notification
-    const newNotification = await prisma.notification.create({
-      data: {
-        content: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
-        patientId: appointment.patientId,
-      },
-    });
-
-    // Send notification via WebSocket
-    if (userToWS[appointment.patient.userId]) {
-      userToWS[appointment.patient.userId]({
-        message: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
-        isNotification: true,
+    if (appointment.patient.notificationsOn){
+      // Create a new notification
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
+          patientId: appointment.patientId,
+        },
       });
+
+      // Send notification via WebSocket
+      if (userToWS[appointment.patient.userId]) {
+        userToWS[appointment.patient.userId]({
+          message: `Deleted Appointment: ${appointment.title} on ${appointment.date}`,
+          isNotification: true,
+        });
+      }
+
     }
 
     res.status(200).json(deletedAppointment);
@@ -550,21 +556,33 @@ router.put('/appointments/:id', authenticateToken, async (req, res) => {
     });
 
     // Find the patient associated with this appointment
-    const patient = await findPatient(req.user.id);
-    // Create a new notification
-    const newNotification = await prisma.notification.create({
-      data: {
-        content: `Updated Appointment: ${title} on ${date}`,
-        patientId: patient.id,
-      },
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: parseInt(id, 10) },
+      include: { patient: true }
     });
 
-    // Send notification via WebSocket
-    if (userToWS[patient.userId]) {
-      userToWS[patient.userId]({
-        message: `Updated Appointment: ${title} on ${date}`,
-        isNotification: true,
+    if (!appointment || !appointment.patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    const patient = appointment.patient;
+
+    if (patient.notificationsOn){
+      // Create a new notification
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: `Updated Appointment: ${title} on ${date}`,
+          patientId: patient.id,
+        },
       });
+
+      // Send notification via WebSocket
+      if (userToWS[patient.userId]) {
+        userToWS[patient.userId]({
+          message: `Updated Appointment: ${title} on ${date}`,
+          isNotification: true,
+        });
+      }
     }
 
     res.status(200).json(updatedAppointment);

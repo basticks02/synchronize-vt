@@ -15,7 +15,7 @@
 }
 
 .apptTitle{
-    width: 600px;
+    width: 500px;
 }
 
 .apptTime{
@@ -47,7 +47,7 @@
 
 .icon-greyed-out {
     color: grey;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
 .pastAppointment {
