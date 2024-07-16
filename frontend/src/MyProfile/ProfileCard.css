@@ -58,6 +58,10 @@
   background-color: #cfcfcf;
 }
 
+.fa-bell-slash{
+  color: red;
+}
+
 .Delete:hover{
   background-color: rgba(245, 102, 102, 0.541);
   color: rgb(190, 6, 6);
