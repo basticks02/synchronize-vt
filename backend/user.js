@@ -28,18 +28,23 @@ const authenticateToken = (req, res, next) => {
     });
   };
 
-//Find patient helper function
-  const findPatient = async (userId, includePhysician = false) => {
-    const include = includePhysician ? { include: { physician: true } } : {};
-    const patient = await prisma.patient.findUnique({
-      where: { userId },
-      ...include
-    });
-    if (!patient) {
-      throw new Error('Patient profile not found');
-    }
-    return patient;
-  };
+// Find patient helper function
+const findPatient = async (identifier, idType = 'userId', includePhysician = false) => {
+  const include = includePhysician ? { include: { physician: true } } : {};
+  const whereClause = idType === 'userId' ? { userId: identifier } : { id: identifier };
+
+  const patient = await prisma.patient.findUnique({
+    where: whereClause,
+    ...include
+  });
+
+  if (!patient) {
+    throw new Error('Patient profile not found');
+  }
+
+  return patient;
+};
+
 
 //Helper function for creating notifications & sending websocket messages
   const createNotification = async (content, patientId, physicianId, userId) => {
@@ -207,8 +212,20 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
     });
 
     // Create a new notification for the physician
-    const content = `New patient profile created: ${firstname} ${lastname}`;
-    await createNotification(content, newPatient.id, physician.id, physician.userId);
+    const newNotification = await prisma.notification.create({
+      data: {
+        content: `New patient profile created: ${firstname} ${lastname}`,
+        physicianId: physician.id,
+      },
+    });
+
+    // Send notification via WebSocket
+    if (userToWS[physician.userId]) {
+      userToWS[physician.userId]({
+        message: `New patient profile created: ${firstname} ${lastname}`,
+        isNotification: true,
+      });
+    }
 
     res.status(201).json(newPatient);
   } catch (error) {
@@ -349,7 +366,7 @@ router.post('/appointments', authenticateToken, async (req, res) => {
   const { title, date, start_time, end_time, patientId } = req.body;
 
   try {
-    const patient = await findPatient(patientId);
+    const patient = await findPatient(patientId, 'id');
     const newAppointment = await prisma.appointment.create({
       data: {
         title,
@@ -361,8 +378,19 @@ router.post('/appointments', authenticateToken, async (req, res) => {
     });
 
     if (patient.notificationsOn){
-      const content = `New appointment created: ${title} on ${date}`;
-      await createNotification(content, patient.id, null, patient.userId);
+      const newNotification = await prisma.notification.create({
+        data: {
+          content: `New appointment created: ${title} on ${date}`,
+          patientId: patient.id,
+        },
+      });
+
+      if (userToWS[patient.userId]) {
+        userToWS[patient.userId]({
+          message: "New Appointment",
+          isNotification: true,
+        });
+      }
     }
 
     res.status(201).json(newAppointment);
