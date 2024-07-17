@@ -36,6 +36,7 @@ model Patient{
   physicianId    Int?
   physician      Physician?    @relation(fields: [physicianId], references: [id])
   notifications   Notification[]
+  notificationsOn Boolean @default(true)
 }
 
 model Appointment{

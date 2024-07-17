@@ -51,10 +51,15 @@
   padding: 8px 16px;
   cursor: pointer;
   transition: all 0.5s ease;
+  text-align: center;
 }
 
-.Edit:hover {
+.Edit:hover, .notifications-patient:hover {
   background-color: #cfcfcf;
+}
+
+.fa-bell-slash{
+  color: red;
 }
 
 .Delete:hover{

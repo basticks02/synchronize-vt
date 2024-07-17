@@ -16,7 +16,7 @@ export default function Navbar() {
       try {
         const response = await api.get('/api/user/notifications', { withCredentials: true });
         const notifications = response.data;
-        const unreadNotifications = notifications.filter((n) => !n.read);
+        const unreadNotifications = notifications.filter((n) => !n.read && n.notificationsOn !== false);
         setUnreadNotifications(unreadNotifications);
         localStorage.setItem('notifications', JSON.stringify(notifications));
       } catch (error) {
@@ -35,7 +35,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const storedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
-    const unreadNotifications = storedNotifications.filter((n) => !n.read);
+    const unreadNotifications = storedNotifications.filter((n) => !n.read && n.notificationsOn !== false);
     setUnreadNotifications(unreadNotifications);
   }, [notification]);
 
