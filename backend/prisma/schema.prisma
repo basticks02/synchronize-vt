@@ -29,7 +29,7 @@ model Patient{
   occupation String
   address String
   phone String
-  complaint String?
+  symptoms Json?
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
   appointments Appointment[]

@@ -58,6 +58,8 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
     }
   }
 
+  // Sort symptoms by priority
+  const sortedSymptoms = patient.symptoms ? [...patient.symptoms].sort((a, b) => b.priority - a.priority) : [];
 
   return (
     <>
@@ -81,7 +83,14 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
           <p>Occupation: {patient.occupation}</p>
           <p>Phone: {patient.phone}</p>
 
-          <p>Complaint: {patient.complaint}</p>
+          <p><strong>Symptoms:</strong></p>
+          <ul className="symptoms-list">
+            {sortedSymptoms.map((symptom, index) => (
+              <li key={index} className={`symptom-item priority-${symptom.priority}`}>
+                {symptom.symptom} <span className="priority">({symptom.priority})</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {showMenu && (

@@ -22,6 +22,28 @@
     font-size: 1.3rem;
   }
 
+  .symptoms-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .symptom-item {
+    background-color: #f5f5f5;
+    margin: 5px 0;
+    padding: 3px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
+  }
+
+  .symptom-item.priority-1 { background-color: #ffdddd; }
+  .symptom-item.priority-2 { background-color: #ffcccc; }
+  .symptom-item.priority-3 { background-color: #ffbbbb; }
+  .symptom-item.priority-4 { background-color: #ffaaaa; }
+  .symptom-item.priority-5 { background-color: #ff9999; }
+
   .fa-ellipsis-vertical {
     top: 16px;
     float: right;

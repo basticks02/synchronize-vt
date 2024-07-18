@@ -22,7 +22,7 @@
   .modal-content p{
     text-transform: uppercase;
   }
-  
+
 .modal-controls{
     display: flex;
     width: 100%;
@@ -48,4 +48,20 @@
     background: #2a2d30;
     color: #fff;
     cursor: pointer;
+  }
+
+  .field{
+    display: flex;
+    align-items: center;
+    margin: 5px 2px;
+  }
+
+  .label{
+    color: gray;
+    margin: 5px;
+  }
+
+  .field input{
+    height: 5px;
+
   }

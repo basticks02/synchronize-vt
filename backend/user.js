@@ -173,7 +173,7 @@ router.post('/logout', (req, res) => {
 
 //Creating Patient Profile
 router.post('/myprofile', authenticateToken, async (req, res) => {
-  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, complaint } = req.body;
+  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, symptoms } = req.body;
 
   try {
     //ensures that another patient profile isn't created
@@ -204,7 +204,7 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         occupation,
         address,
         phone,
-        complaint,
+        symptoms: JSON.parse(symptoms),
         userId: req.user.id,
         physicianId: physician.id,
         notificationsOn: true
@@ -284,11 +284,11 @@ router.delete('/myprofile', authenticateToken, async (req, res) => {
 
 // Edit Patient Profile
 router.put('/myprofile', authenticateToken, async (req, res) => {
-  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, complaint } = req.body;
+  const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, symptoms } = req.body;
 
   try {
     // Fetch current patient data
-    const currentPatient = await findPatient(req.user.id, true);
+    const currentPatient = await findPatient(req.user.id, 'userId', true);
     // Prepare the updated data
     const updatedData = {
       firstname,
@@ -301,7 +301,7 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
       occupation,
       address,
       phone,
-      complaint,
+      symptoms: JSON.parse(symptoms),
     };
 
     // Update the patient profile
@@ -327,7 +327,7 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
       place_of_birth: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their place of birth.`,
       occupation: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their occupation.`,
       address: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their address.`,
-      complaint: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their complaint.`,
+      symptoms: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their symptoms preference.`,
     };
 
     // Create notifications based on changes if notifications are enabled for the patient
