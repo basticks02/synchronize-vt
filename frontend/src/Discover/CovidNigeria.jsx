@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Doughnut } from 'react-chartjs-2';
+import { PuffLoader } from 'react-spinners';
 import 'chart.js/auto';
 import './CovidNigeria.css'
 
@@ -20,7 +21,13 @@ export default function CovidNigeria() {
     fetchData();
   }, []);
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) {
+    return (
+      <div className="loading-container">
+        <PuffLoader color={"#123abc"} loading={true} size={150} />
+      </div>
+    );
+  }
 
   const chartData = {
     labels: ['Cases', 'Deaths', 'Recovered'],
