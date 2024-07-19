@@ -8,26 +8,45 @@ const ageGroupWeights = {
     elder: [2, 4, 2, 3, 5]
   };
 
-const medicationWeights = [
-    [4, 1, 5, 0, 4], // Paracetamol
-    [0, 5, 0, 5, 1], // Amoxicillin
-    [0, 5, 0, 4, 1], // Ciprofloxacin
-    [3, 1, 4, 0, 5], // Ibuprofen
-    [0, 0, 0, 5, 0], // Metronidazole
-    [5, 4, 0, 3, 1], // Artemether/Lumefantrine
-    [1, 2, 1, 1, 1], // Vitamin C
-    [3, 0, 3, 0, 5]  // Diclofenac
-];
+const medicationWeights = {
+    Paracetamol: [4, 1, 5, 0, 4],
+    Amoxicillin: [0, 5, 0, 5, 1],
+    Ciprofloxacin: [0, 5, 0, 4, 1],
+    Ibuprofen: [3, 1, 4, 0, 5],
+    Metronidazole: [0, 0, 0, 5, 0],
+    Artemether_Lumefantrine: [5, 4, 0, 3, 1],
+    Vitamin_C: [1, 2, 1, 1, 1],
+    Diclofenac: [3, 0, 3, 0, 5]
+};
+
 
 //accessiility scores of each medicine
-const accessibilityScores = [5, 4, 4, 5, 3, 4, 5, 4];
+const accessibilityScores = {
+    Paracetamol: 5,
+    Amoxicillin: 4,
+    Ciprofloxacin: 4,
+    Ibuprofen: 5,
+    Metronidazole: 3,
+    Artemether_Lumefantrine: 4,
+    Vitamin_C: 5,
+    Diclofenac: 4
+};
 
 //prices of each medication
-const medicationPrices = [30, 25, 50, 20, 15, 40, 10, 35];
+const medicationPrices = {
+    Paracetamol: 30,
+    Amoxicillin: 25,
+    Ciprofloxacin: 50,
+    Ibuprofen: 20,
+    Metronidazole: 15,
+    Artemether_Lumefantrine: 40,
+    Vitamin_C: 10,
+    Diclofenac: 35
+};
 
 //calculation of age from date of birth
-function calculateAge(date_of_birth) {
-    const birthDate = new Date(date_of_birth);
+function calculateAge(dob) {
+    const birthDate = new Date(dob);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
