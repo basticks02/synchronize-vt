@@ -108,7 +108,7 @@ export default function MyProfile() {
       <main>
         <section className="myprofilehero">
             <video className="video-background" autoPlay loop muted>
-              <source src="../images/hero.mp4" type="video/mp4" />
+              <source src="https://res.cloudinary.com/dvbfkbehg/video/upload/v1721619091/hero_wrg6v9.mov" type="video/mp4" />
             </video>
             <div className="hero-content">
               {user ? <h1>Hey {user.username} !</h1>: ''}

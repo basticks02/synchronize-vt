@@ -20,7 +20,7 @@ export default function PatientCard({patient, onClick}) {
         {patient.profileImage ? (
             <img src={patient.profileImage} alt="Patient" />
           ) : (
-            <img src="https://picsum.photos/id/64/200/300" alt="Patient" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt="Patient" />
           )}
         </div>
         <div className='patient-name'>

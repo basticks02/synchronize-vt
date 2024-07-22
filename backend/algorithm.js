@@ -137,8 +137,9 @@ function recommendMedication(patientData) {
   // Calculate final scores for each medication
   compatibilityScores.forEach(({ medication, compatibility }) => {
     const price = medicationPrices[medication];
+    const invertedPrice = maxPrice - price;
     const normalizedCompatibility = normalize(compatibility, maxCompatibility);
-    const normalizedPrice = normalize(price, maxPrice);
+    const normalizedPrice = normalize(invertedPrice, maxPrice);
     const finalScore = calculateFinalScore(normalizedCompatibility, normalizedPrice);
 
     if (finalScore > highestFinalScore) {
