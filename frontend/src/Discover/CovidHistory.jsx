@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import { useInView } from 'react-intersection-observer';
+import { PuffLoader } from 'react-spinners';
 import 'chart.js/auto';
 import './CovidHistory.css';
 
@@ -23,8 +24,14 @@ export default function CovidHistory() {
 
     fetchData();
   }, []);
-  
-  if (!data) return <div>Loading...</div>;
+
+  if (!data) {
+    return (
+      <div className="loading-container">
+        <PuffLoader color={"#123abc"} loading={true} size={350} />
+      </div>
+    );
+  }
 
   const chartData = {
     labels: Object.keys(data.cases),

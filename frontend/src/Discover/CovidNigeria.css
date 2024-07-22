@@ -10,3 +10,10 @@
     width: 350px;
     height: 350px;
 }
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 350px;
+  }

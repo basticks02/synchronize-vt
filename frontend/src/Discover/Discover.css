@@ -39,3 +39,15 @@
     text-transform: uppercase;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
 }
+
+@media (max-width: 1000px) {
+    .covid-container{
+        flex-direction: column;
+    }
+
+    .covid-nigeria,
+    .covid-worldwide{
+    width: 100%;
+    }
+
+}

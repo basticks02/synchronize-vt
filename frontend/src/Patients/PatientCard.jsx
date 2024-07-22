@@ -17,7 +17,11 @@ export default function PatientCard({patient, onClick}) {
   return (
     <div className='patient-card' onClick={() => onClick(patient.id)} >
         <div className='profile-picture'>
-            <img src="https://picsum.photos/id/64/200/300" alt="patient" />
+        {patient.profileImage ? (
+            <img src={patient.profileImage} alt="Patient" />
+          ) : (
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt="Patient" />
+          )}
         </div>
         <div className='patient-name'>
             <p>{patient.firstname} {patient.lastname}</p>
