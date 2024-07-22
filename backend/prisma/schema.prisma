@@ -30,6 +30,7 @@ model Patient{
   address String
   phone String
   symptoms Json?
+  profileImage String?
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
   appointments Appointment[]

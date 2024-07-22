@@ -4,6 +4,7 @@ import { UserContext } from '../UserContext';
 
 export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo, initialData = {}, title }) {
   const { user } = useContext(UserContext);
+  const [image, setImage] = useState(null);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -63,6 +64,10 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSymptomPriorityChange = (e, index) => {
     const newSymptoms = [...formData.symptoms];
     newSymptoms[index] = { ...newSymptoms[index], priority: parseInt(e.target.value) };
@@ -78,12 +83,23 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
       return;
     }
 
-    // Stringify the symptoms array 
+    // Stringify the symptoms array
     const payload = {
       ...formData,
       symptoms: JSON.stringify(formData.symptoms),
     };
-    handleSubmitPatientInfo(e, payload);
+
+    if (image) {
+      const formData = new FormData();
+      for (const key in payload) {
+        formData.append(key, payload[key]);
+      }
+      formData.append('image', image);
+      handleSubmitPatientInfo(e, formData);
+    } else {
+      // If there's no image, use the payload object as before
+      handleSubmitPatientInfo(e, payload);
+    }
   };
 
   if (!isOpen) return null;
@@ -93,6 +109,12 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
       <div className="modal-content">
         <form onSubmit={handleSubmit}>
           <p>{title}</p>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+
           <input name="firstname" placeholder="First Name" value={formData.firstname} onChange={handleChange} required />
           <input name="lastname" placeholder="Last Name" value={formData.lastname} onChange={handleChange} required />
           <input name="place_of_birth" placeholder="Place of Birth" value={formData.place_of_birth} onChange={handleChange} required />

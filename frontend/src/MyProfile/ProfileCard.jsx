@@ -1,5 +1,5 @@
 import './ProfileCard.css'
-import React, { useContext, useState }  from 'react'
+import React, { useContext, useState, useEffect }  from 'react'
 import {UserContext} from '../UserContext'
 import api from '../api'
 import ProfileModal from './ProfileModal'
@@ -9,9 +9,25 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(patient.notificationsOn);
-
+  const [recommendations, setRecommendations] = useState({ bestMedicationCompatibility: '', bestMedicationFinal: '' });
 
   if (!patient) return <div></div>
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const response = await api.get('/api/user/recommend', {
+          params: { patientId: user.role === 'physician' ? patient.id : undefined },
+          withCredentials: true
+        });
+        setRecommendations(response.data);
+      } catch (error) {
+        console.error('Error fetching recommendations:', error.response ? error.response.data : error.message);
+      }
+    };
+
+    fetchRecommendations();
+  }, [patient, user.role]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
@@ -35,7 +51,15 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
   const handleUpdatePatientInfo = async (e, formData) => {
     e.preventDefault();
     try {
-      const response = await api.put('/api/user/myprofile', formData, { withCredentials: true });
+      let response;
+      if (formData instanceof FormData) {
+        response = await api.put('/api/user/myprofile', formData, {
+          withCredentials: true,
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        response = await api.put('/api/user/myprofile', formData, { withCredentials: true });
+      }
       setPatient(response.data);
       updateUser({ ...user, patient: response.data });
       setEditModalOpen(false);
@@ -66,12 +90,16 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
       <div className='card-container'>
 
         <div className='patient-photo'>
-          <img src="https://picsum.photos/id/64/200/300" alt="Patient" />
+        {patient.profileImage ? (
+            <img src={patient.profileImage} alt="Patient" />
+          ) : (
+            <img src="https://picsum.photos/id/64/200/300" alt="Patient" />
+          )}
         </div>
 
 
         <div className='patient-info'>
-          <h1> {patient.firstname} {patient.lastname} </h1>
+          <h1> {patient.firstname}  {patient.lastname} </h1>
 
           <p>Place of Birth: {patient.place_of_birth}</p>
           <p>Date of Birth: {new Date(patient.date_of_birth).toLocaleDateString()}</p>
@@ -83,14 +111,21 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
           <p>Occupation: {patient.occupation}</p>
           <p>Phone: {patient.phone}</p>
 
-          <p><strong>Symptoms:</strong></p>
-          <ul className="symptoms-list">
-            {sortedSymptoms.map((symptom, index) => (
-              <li key={index} className={`symptom-item priority-${symptom.priority}`}>
-                {symptom.symptom} <span className="priority">({symptom.priority})</span>
-              </li>
-            ))}
-          </ul>
+          <div className='symptomContainer'>
+            <p><strong>Symptoms <i className="fa-solid fa-angle-down"></i></strong></p>
+            <ul className="symptoms-list">
+              {sortedSymptoms.map((symptom, index) => (
+                <li key={index} className={`symptom-item priority-${symptom.priority}`}>
+                  {symptom.symptom} <span className="priority">({symptom.priority})</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+
+          <p><strong>Prescription Recommendations:</strong></p>
+          <p>Best Medication Based on Compatibility: {recommendations.bestMedicationCompatibility}</p>
+          <p>Best Medication Including Price Factor: {recommendations.bestMedicationFinal}</p>
         </div>
 
         {showMenu && (

@@ -3,12 +3,24 @@ const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const {userToWS} = require('./websocket');
+const {recommendMedication} = require('./algorithm')
+const _ = require('lodash');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
 const SECRET_KEY = process.env.SECRET_KEY
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 
 //Middleware
 const authenticateToken = (req, res, next) => {
@@ -45,6 +57,34 @@ const findPatient = async (identifier, idType = 'userId', includePhysician = fal
   return patient;
 };
 
+// Route to get medication recommendation based on patient symptoms
+router.get('/recommend', authenticateToken, async (req, res) => {
+  const { patientId } = req.query;
+
+  try {
+    let patient;
+    if (req.user.role === 'physician' && patientId) {
+      patient = await findPatient(parseInt(patientId, 10), 'id');
+    } else {
+      patient = await findPatient(req.user.id, 'userId');
+    }
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient profile not found' });
+    }
+
+    const patientData = {
+      priorities: patient.symptoms.map(s => s.priority),
+      dateOfBirth: patient.date_of_birth
+    };
+
+    const { bestMedicationCompatibility, bestMedicationFinal } = recommendMedication(patientData);
+    res.status(200).json({ bestMedicationCompatibility, bestMedicationFinal });
+  } catch (error) {
+    console.error('Error recommending medication:', error);
+    res.status(500).json({ error: 'Failed to recommend medication' });
+  }
+});
 
 //Helper function for creating notifications & sending websocket messages
   const createNotification = async (content, patientId, physicianId, userId) => {
@@ -192,6 +232,8 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         return res.status(404).json({ error: 'Physician not found' });
     }
 
+    const parsedSymptoms = symptoms ? JSON.parse(symptoms) : [];
+
     const newPatient = await prisma.patient.create({
       data: {
         firstname,
@@ -204,7 +246,7 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
         occupation,
         address,
         phone,
-        symptoms: JSON.parse(symptoms),
+        symptoms: parsedSymptoms,
         userId: req.user.id,
         physicianId: physician.id,
         notificationsOn: true
@@ -283,26 +325,34 @@ router.delete('/myprofile', authenticateToken, async (req, res) => {
 
 
 // Edit Patient Profile
-router.put('/myprofile', authenticateToken, async (req, res) => {
+router.put('/myprofile', authenticateToken, upload.single('image'), async (req, res) => {
   const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, symptoms } = req.body;
 
   try {
     // Fetch current patient data
     const currentPatient = await findPatient(req.user.id, 'userId', true);
     // Prepare the updated data
+    const parsedSymptoms = symptoms ? JSON.parse(symptoms) : [];
     const updatedData = {
-      firstname,
-      lastname,
-      place_of_birth,
-      date_of_birth: new Date(date_of_birth),
-      sex,
-      height: parseInt(height, 10),
-      weight: parseInt(weight, 10),
-      occupation,
-      address,
-      phone,
-      symptoms: JSON.parse(symptoms),
+      firstname: firstname || currentPatient.firstname,
+      lastname: lastname || currentPatient.lastname,
+      place_of_birth: place_of_birth || currentPatient.place_of_birth,
+      date_of_birth: date_of_birth ? new Date(date_of_birth) : currentPatient.date_of_birth,
+      sex: sex || currentPatient.sex,
+      height: height ? parseInt(height, 10) : currentPatient.height,
+      weight: weight ? parseInt(weight, 10) : currentPatient.weight,
+      occupation: occupation || currentPatient.occupation,
+      address: address || currentPatient.address,
+      phone: phone || currentPatient.phone,
+      symptoms: parsedSymptoms.length > 0 ? parsedSymptoms : currentPatient.symptoms,
     };
+
+    if (req.file) {
+      console.log('Uploading file to Cloudinary:', req.file.path);
+      const result = await cloudinary.uploader.upload(req.file.path);
+      console.log('Cloudinary upload result:', result);
+      updatedData.profileImage = result.secure_url;
+    }
 
     // Update the patient profile
     const updatedPatient = await prisma.patient.update({
@@ -315,10 +365,15 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
     // Check what fields were changed and create notifications
     const changes = [];
     for (const [key, value] of Object.entries(updatedData)) {
-      if (currentPatient[key] !== value) {
+      if (key === 'symptoms') {
+        if (!_.isEqual(currentPatient[key], value)) {
+          changes.push(key);
+        }
+      } else if (currentPatient[key] !== value) {
         changes.push(key);
       }
     }
+
 
     // Notification messages for specific changes
     const changeMessages = {
@@ -328,6 +383,7 @@ router.put('/myprofile', authenticateToken, async (req, res) => {
       occupation: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their occupation.`,
       address: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their address.`,
       symptoms: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} changed their symptoms preference.`,
+      profileImage: `Patient profile edited: ${currentPatient.firstname} ${currentPatient.lastname} updated their profile picture.`,
     };
 
     // Create notifications based on changes if notifications are enabled for the patient

@@ -75,7 +75,7 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
   if (!isOpen) return null;
 
   return (
-    <div className="patient-modal-overlay">
+    <div className="modal-overlay">
       <div className="patient-modal-content">
         <span className="close" onClick={onClose}>&times;</span>
         {patient && (
