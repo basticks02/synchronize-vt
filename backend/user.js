@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const {userToWS} = require('./websocket');
 const {recommendMedication} = require('./algorithm')
+const { checkNotificationConditions } = require('./notifications');
 const _ = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
