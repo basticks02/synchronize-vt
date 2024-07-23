@@ -1,0 +1,8 @@
+.confirmation-modal-content{
+    background: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 5px;
+    text-align: center;
+}
