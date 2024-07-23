@@ -4,16 +4,18 @@ import api from '../api'
 import ConfirmModal from '../ConfirmModal/ConfirmModal'
 
 
-export default function PatientCard({patient, onClick, onClose}) {
+export default function PatientCard({patient, onClick}) {
   const [notificationsOn, setNotificationsOn] = useState(patient.notificationsOn)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [conditions, setConditions] = useState(null);
+  const [canTurnOff, setCanTurnOff] = useState(true);
 
   const toggleNotifications = async () => {
     try {
       const response = await api.put(`/api/user/patients/${patient.id}/toggle-notifications`, {}, { withCredentials: true });
       if (response.data.showConfirmationModal) {
         setConditions(response.data.conditions);
+        setCanTurnOff(response.data.canTurnOff);
         setShowConfirmationModal(true);
       } else {
         setNotificationsOn(response.data.updatedPatient.notificationsOn);
@@ -24,7 +26,7 @@ export default function PatientCard({patient, onClick, onClose}) {
   };
 
   const handleConfirmation = async (confirm) => {
-    if (confirm) {
+    if (confirm && canTurnOff) {
       try {
         const response = await api.put(`/api/user/patients/${patient.id}/toggle-notifications`, {confirm: true}, { withCredentials: true });
         if (response.data.updatedPatient) {
@@ -35,14 +37,16 @@ export default function PatientCard({patient, onClick, onClose}) {
       }
     }
     setShowConfirmationModal(false);
-    if (!confirm) {
-      onClose();
+  };
+
+  const handleCardClick = (e) => {
+    if (!showConfirmationModal) {
+      onClick(patient.id);
     }
   };
 
-
   return (
-    <div className='patient-card' onClick={() => onClick(patient.id)} >
+    <div className='patient-card' onClick={handleCardClick} >
         <div className='profile-picture'>
         {patient.profileImage ? (
             <img src={patient.profileImage} alt="Patient" />
@@ -61,10 +65,11 @@ export default function PatientCard({patient, onClick, onClose}) {
 
         {showConfirmationModal && (
           <ConfirmModal
-            onClose={onClose}
             patient={patient}
             conditions={conditions}
             onConfirm={handleConfirmation}
+            canTurnOff={canTurnOff}
+            onClose={() => setShowConfirmationModal(false)}
           />
       )}
     </div>

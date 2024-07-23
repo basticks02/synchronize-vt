@@ -560,9 +560,10 @@ router.get('/notifications', authenticateToken, async (req, res) => {
 // Toggle notification status for a patient
 router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { confirm } = req.body; 
+  const { confirm } = req.body;
 
   try {
+    const patientId = parseInt(id, 10);
     const patient = await prisma.patient.findUnique({
       where: { id: parseInt(id, 10) },
     });
@@ -571,13 +572,23 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
       return res.status(404).json({ error: 'Patient not found' });
     }
 
-    const conditions = await checkNotificationConditions(parseInt(id, 10));
+    const { conditions, totalWeight } = await checkNotificationConditions(patientId);
 
-    if ((conditions.hasUpcomingAppointments || conditions.hasManyAppointments || conditions.isElder || conditions.isInfant) && !confirm) {
+    if (totalWeight >= 5) {
       return res.status(200).json({
         showConfirmationModal: true,
         conditions,
-        currentNotificationStatus: patient.notificationsOn
+        currentNotificationStatus: patient.notificationsOn,
+        canTurnOff: false
+      });
+    }
+
+    if (totalWeight >= 1 && !confirm) {
+      return res.status(200).json({
+        showConfirmationModal: true,
+        conditions,
+        currentNotificationStatus: patient.notificationsOn,
+        canTurnOff: true
       });
     }
 

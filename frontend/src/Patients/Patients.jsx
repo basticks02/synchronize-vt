@@ -60,7 +60,6 @@ export default function Patients() {
                   key ={patient.id}
                   patient={patient}
                   onClick={handlePatientClick}
-                  onClose={() => setProfileModalOpen(false)}
                   onEdit={handlePatientEdit}/>
               ))}
 

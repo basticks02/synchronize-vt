@@ -2,6 +2,12 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const DaysRange = 3;
+const conditionWeights = {
+    hasUpcomingAppointments: 2,
+    hasManyAppointments: 1,
+    isElder: 4,
+    isInfant: 3
+};
 
 const checkNotificationConditions = async (patientId) => {
   const patient = await prisma.patient.findUnique({
@@ -14,19 +20,12 @@ const checkNotificationConditions = async (patientId) => {
   }
 
   const today = new Date();
-  const birthDate = new Date(patient.date_of_birth);
-  const age = today.getFullYear() - birthDate.getFullYear();
-  const monthDifference = today.getMonth() - birthDate.getMonth();
-
-  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-
+  const age = today.getFullYear() - patient.date_of_birth.getFullYear();
   const upcomingAppointments = patient.appointments.filter(appointment => {
     const appointmentDate = new Date(appointment.date);
     const timeDifference = appointmentDate - today;
-    return timeDifference >= 0 && timeDifference <= DaysRange * 24 * 60 * 60 * 1000; // 3 days in milliseconds
-  });
+    return timeDifference >= 0 && timeDifference <= DaysRange * 24 * 60 * 60 * 1000;
+  })
 
   const conditions = {
     hasUpcomingAppointments: upcomingAppointments.length > 0,
@@ -35,7 +34,11 @@ const checkNotificationConditions = async (patientId) => {
     isInfant: age <= 1,
   };
 
-  return conditions;
+  const totalWeight = Object.keys(conditions).reduce((sum, condition) => {
+    return sum + (conditions[condition] ? conditionWeights[condition] : 0);
+  }, 0);
+
+  return { conditions, totalWeight };
 };
 
 module.exports = { checkNotificationConditions };
