@@ -188,7 +188,34 @@ footer {
 }
 
 .contact{
-  border: 1px black solid;
+  margin-top: 5%;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.physician-brief{
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: right;
+  gap: 10px;
+}
+
+.text{
+  width: 50%;
+  font-size: medium;
+  text-align: right;
+}
+
+.physician-brief img{
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+}
+
+.contact-info{
+  width: 50%;
 }
 
 
