@@ -562,6 +562,9 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
   const { id } = req.params;
   const { confirm } = req.body;
 
+  const CannotTurnOffCutoff = 5;
+  const ShowConfirmModalCutoff = 1;
+
   try {
     const patientId = parseInt(id, 10);
     const patient = await prisma.patient.findUnique({
@@ -574,7 +577,7 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
 
     const { conditions, totalWeight } = await checkNotificationConditions(patientId);
 
-    if (totalWeight >= 5) {
+    if (totalWeight >= CannotTurnOffCutoff) {
       return res.status(200).json({
         showConfirmationModal: true,
         conditions,
@@ -583,7 +586,7 @@ router.put('/patients/:id/toggle-notifications', authenticateToken, async (req, 
       });
     }
 
-    if (totalWeight >= 1 && !confirm) {
+    if (totalWeight >= ShowConfirmModalCutoff && !confirm) {
       return res.status(200).json({
         showConfirmationModal: true,
         conditions,

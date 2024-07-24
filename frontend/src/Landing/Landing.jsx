@@ -85,10 +85,22 @@ export default function Landing() {
           </div>
         </div>
 
+
         <div className='contact'>
-          <p>Questions or Inquiries? Let's talk</p>
-          <p>+2347082210979, +2348173922714</p>
-          <p>enoobongmemorial@yahoo.com</p>
+          <div className='physician-brief'>
+            <div className='text'>
+              <p>"The happiest people don't necessarily have the best of everything, they make the best of everything. So live simply, love generously....."</p>
+              <p><strong>Dr. I J Ekanem</strong></p>
+            </div>
+            <div>
+              <img src="https://res.cloudinary.com/dvbfkbehg/image/upload/v1721781458/IMG_5930_qfgcyg.jpg" alt="Dr Ekanem" />
+            </div>
+          </div>
+          <div className='contact-info'>
+            <p>Questions or Inquiries? Let's talk</p>
+            <p>+2347082210979, +2348173922714</p>
+            <p>enoobongmemorial@yahoo.com</p>
+          </div>
         </div>
 
       </main>
