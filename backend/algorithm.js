@@ -1,3 +1,6 @@
+const NodeCache = require('node-cache');
+const myCache = new NodeCache();
+
 const symptoms = ['Fever', 'Cough', 'Headache', 'Diarrhea', 'Body Pain'];
 const medications = ['Paracetamol', 'Amoxicillin', 'Ciprofloxacin', 'Ibuprofen', 'Metronidazole', 'Artemether/Lumefantrine', 'Vitamin C', 'Diclofenac'];
 
@@ -63,6 +66,15 @@ function determineAgeGroup(age) {
   return 'elder';
 }
 
+// Generate a cache key based on symptoms, age group, and age range
+function generateCacheKey(symptoms, age) {
+
+  const ageGroup = determineAgeGroup(age);
+  const ageRange = Math.floor(age / 5) * 5; // Group age into ranges of 5 years
+
+  return `${symptoms.join('-')}-${ageGroup}-${ageRange}`;
+}
+
 // Function to scale symptoms by patient priority and age group weights
 function scaleSymptoms(priorities, ageGroup) {
   const ageWeights = ageGroupWeights[ageGroup];
@@ -107,6 +119,24 @@ function recommendMedication(patientData) {
   const age = calculateAge(dateOfBirth);
   const ageGroup = determineAgeGroup(age);
 
+  // Generate a list of potential cache keys within the 5-year range
+  const cacheKeys = [];
+  for (let i = -5; i <= 5; i++) {
+    const adjustedAge = age + i;
+    const key = generateCacheKey(priorities, adjustedAge);
+    cacheKeys.push(key);
+  }
+
+  // Check for existing cached result within the age range
+  for (const key of cacheKeys) {
+    const cachedResult = myCache.get(key);
+    if (cachedResult) {
+      return cachedResult;
+    }
+  }
+
+  const cacheKey = generateCacheKey(priorities, age);
+
   // Scale patient symptoms
   const scaledSymptoms = scaleSymptoms(priorities, ageGroup);
 
@@ -148,17 +178,14 @@ function recommendMedication(patientData) {
     }
   });
 
-  return {
+  const result = {
     bestMedicationCompatibility,
     bestMedicationFinal
   };
+
+  // Cache the result
+  myCache.set(cacheKey, result);
+  return result;
 }
 
-// Dummy patient data for testing
-const dummyPatientData = {
-  priorities: [4, 1, 2, 5, 3],
-  dateOfBirth: '2022-07-16'
-};
-
-const { bestMedicationCompatibility, bestMedicationFinal } = recommendMedication(dummyPatientData);
 module.exports = { recommendMedication };
