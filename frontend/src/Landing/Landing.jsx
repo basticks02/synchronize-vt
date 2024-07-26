@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
 import { useContext } from 'react'
 import {UserContext} from '../UserContext'
+import Footer from '../Footer/Footer'
 
 export default function Landing() {
   const {user} = useContext(UserContext)
@@ -105,9 +106,7 @@ export default function Landing() {
 
       </main>
 
-      <footer>
-        <p>Developed by Synchronize</p>
-      </footer>
+      <Footer/>
     </>
   )
 }

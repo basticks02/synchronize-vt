@@ -7,6 +7,7 @@ import api from '../api';
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../UserContext';
 import HeroSection from '../HeroSection';
+import Footer from '../Footer/Footer';
 
 export default function Notifications() {
     const { updatedNotification, notification } = useContext(WebSocketContext);
@@ -85,9 +86,7 @@ export default function Notifications() {
                 </section>
             </main>
 
-            <footer>
-                <p>Developed by Synchronize</p>
-            </footer>
+            <Footer/>
         </>
     );
 }

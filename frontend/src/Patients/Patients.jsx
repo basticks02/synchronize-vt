@@ -6,6 +6,7 @@ import PatientCard from './PatientCard'
 import PatientProfileModal from './PatientProfileModal'
 import api from '../api'
 import HeroSection from '../HeroSection'
+import Footer from '../Footer/Footer'
 
 export default function Patients() {
   const {user} = useContext(UserContext)
@@ -63,6 +64,8 @@ export default function Patients() {
                     patientId={selectedPatientId}
               />
             </section>
+
+            <Footer/>
       </main>
     </>
   )
