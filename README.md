@@ -14,8 +14,8 @@ Synchronize is a cutting-edge web application designed for EnoObong Memorial Med
 
 **Scope:** The initial scope includes a landing page, user authentication, profile management for patients, a COVID-19 resource section, a locate page with Google Maps integration, and a notification system. Future stretch goals include an AI chatbot for health diagnosis and additional interactive features.
 
-Refer to the Project Plan for a more in-depth explanation:
-https://docs.google.com/document/d/1qVpVUWfpK19PLDRcP0QqXiVbzNUfehxs9ig6wsnwLv4/edit?usp=sharing
+Refer to the [Project Plan](https://docs.google.com/document/d/1qVpVUWfpK19PLDRcP0QqXiVbzNUfehxs9ig6wsnwLv4/edit?usp=sharing) for a more in-depth explanation.
+
 
 ## Technical Challenges
 
@@ -38,5 +38,7 @@ https://docs.google.com/document/d/1qVpVUWfpK19PLDRcP0QqXiVbzNUfehxs9ig6wsnwLv4/
   - **Level 1 Cache:** Reuse prescriptions for identical symptoms and age.
   - **Level 2 Cache:** Calculate the distance between symptom vectors and reuse similar ones.
   - **Level 3 Cache:** Store and reuse compatibility scores for medications to save computation time.
-Refer to the implementation plan:
-https://docs.google.com/document/d/1XbM15YjcYmMgJUj9eLimreuMpQ4XMU_Plr0ZVqzt_6Q/edit?usp=sharing
+Refer to the [Implementation plan](https://docs.google.com/document/d/1XbM15YjcYmMgJUj9eLimreuMpQ4XMU_Plr0ZVqzt_6Q/edit?usp=sharing).
+
+### Author:
+Ekomobong Ekanem

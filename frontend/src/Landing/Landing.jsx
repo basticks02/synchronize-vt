@@ -59,12 +59,16 @@ export default function Landing() {
         <div className='vision-and-mission'>
           <div className='vision'>
             <h1>The Vision</h1>
-            <p>To be a one stop center for excellent service delivery</p>
+            <div className='Description'>
+              <p>To be a one stop center for excellent service delivery</p>
+            </div>
           </div>
 
           <div className='mission'>
             <h1>The Mission</h1>
-            <p>To reach the underserved population in particular and indeed everyone with the best of medical care.</p>
+            <div className='Description'>
+              <p>To reach the underserved population in particular and indeed everyone with the best of medical care.</p>
+            </div>
           </div>
         </div>
 
