@@ -84,7 +84,6 @@
 }
 
 .hospital-info{
-  border: 1px black solid;
   height: auto;
   padding: 50px;
   line-height: 1.6;
@@ -135,8 +134,16 @@
 }
 
 .vision-and-mission p{
-  font-size: 200%;
+  font-size: 100%;
   transition: opacity 3s ease;
+}
+
+.Description{
+  height: 50%;
+  margin: auto;
+  width: 50%;
+  align-content: center;
+  margin-bottom: 20px;
 }
 
 .vision,
@@ -144,10 +151,9 @@
   width: 49%;
   padding: 30px;
   max-height: 600px;
-  height: 600px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
-
+  text-align: center;
 }
 
 .affiliations{
@@ -195,7 +201,7 @@
 }
 
 .text{
-  width: 50%;
+  width: 70%;
   font-size: medium;
   text-align: right;
 }
@@ -219,5 +225,8 @@
   .vision,
   .mission{
     width: 100%;
+    margin-bottom: 20px;
   }
+
+  
 }
