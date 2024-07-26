@@ -349,9 +349,7 @@ router.put('/myprofile', authenticateToken, upload.single('image'), async (req, 
     };
 
     if (req.file) {
-      console.log('Uploading file to Cloudinary:', req.file.path);
       const result = await cloudinary.uploader.upload(req.file.path);
-      console.log('Cloudinary upload result:', result);
       updatedData.profileImage = result.secure_url;
     }
 

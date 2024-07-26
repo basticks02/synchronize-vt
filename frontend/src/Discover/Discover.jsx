@@ -5,6 +5,7 @@ import Map from './Map'
 import CovidNigeria from './CovidNigeria'
 import CovidWorldwide from './CovidWorldWide'
 import CovidHistory from './CovidHistory'
+import HeroSection from '../HeroSection'
 
 export default function Discover() {
   return (
@@ -12,14 +13,7 @@ export default function Discover() {
         <Navbar/>
 
         <main>
-            <section className="myprofilehero">
-                <video className="video-background" autoPlay loop muted>
-                    <source src="https://res.cloudinary.com/dvbfkbehg/video/upload/v1721619091/hero_wrg6v9.mov" type="video/mp4" />
-                </video>
-                <div className="hero-content">
-                    <h1>DISCOVER</h1>
-                </div>
-            </section>
+            <HeroSection title="DISCOVER" />
 
             <section className='covid-resources'>
                 <div className='covid-vaccines'>
