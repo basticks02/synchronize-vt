@@ -13,6 +13,8 @@ export default function Patients() {
   const [patients, setPatients] = useState([])
   const [isProfileModalOpen, setProfileModalOpen] = useState(false)
   const [selectedPatientId, setSelectedPatientId] = useState(null)
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   //fetching all patients from the DB & necessary filtering
   useEffect(() => {
@@ -20,12 +22,20 @@ export default function Patients() {
       try{
         const response = await api.get('api/user/patients', {withCredentials: true})
         setPatients(response.data)
+        setFilteredPatients(response.data);
       } catch (error){
         console.error('Error fetching patients:', error.response ? ErrorEvent.response.data : error.message)
       }
     }
     fetchPatients()
   }, [])
+
+  useEffect(() => {
+    const results = patients.filter(patient =>
+      `${patient.firstname} ${patient.lastname}`.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredPatients(results);
+  }, [searchQuery, patients]);
 
   const handlePatientEdit = (patient) => {
     setSelectedPatientId(patient.id);
@@ -44,13 +54,22 @@ export default function Patients() {
         <main>
             <HeroSection title={`HEY DR. ${user.username}!`} />
 
-            <section className='patientlist'>
+            <div className='PatientSearch'>
+              <i className="fa-solid fa-magnifying-glass"></i>
+              <input
+                placeholder='Find a patient'
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
 
+            <section className='patientlist'>
               <div className='patientHeadline'>
                 <h3>Your Patients</h3>
               </div>
 
-              {patients.map((patient) => (
+              {filteredPatients.map((patient) => (
                 <PatientCard
                   key ={patient.id}
                   patient={patient}
