@@ -66,41 +66,26 @@ function determineAgeGroup(age) {
   return 'elder';
 }
 
-// Generate a cache key based on symptoms, age group, and age range
+// Generate a cache key based on symptoms, age group, and age
 function generateCacheKey(symptoms, age) {
-
   const ageGroup = determineAgeGroup(age);
-  const ageRange = Math.floor(age / 5) * 5; // Group age into ranges of 5 years
-
-  return `${symptoms.join('-')}-${ageGroup}-${ageRange}`;
+  return `${symptoms.join('-')}-${ageGroup}-${age}`;
 }
 
 // Function to scale symptoms by patient priority and age group weights
 function scaleSymptoms(priorities, ageGroup) {
   const ageWeights = ageGroupWeights[ageGroup];
-  const scaledSymptoms = [];
-  for (let i = 0; i < priorities.length; i++) {
-    scaledSymptoms.push(priorities[i] * ageWeights[i]);
-  }
-  return scaledSymptoms;
+  return priorities.map((priority, i) => priority * ageWeights[i]);
 }
 
 // Function to scale medication weights by accessibility score
 function scaleMedicationWeights(weights, accessibility) {
-  const scaledWeights = [];
-  for (let i = 0; i < weights.length; i++) {
-    scaledWeights.push(weights[i] * accessibility);
-  }
-  return scaledWeights;
+  return weights.map(weight => weight * accessibility);
 }
 
 // Function to calculate the compatibility score
 function calculateCompatibility(patientSymptoms, medicationWeights) {
-  let compatibilityScore = 0;
-  for (let i = 0; i < patientSymptoms.length; i++) {
-    compatibilityScore += patientSymptoms[i] * medicationWeights[i];
-  }
-  return compatibilityScore;
+  return patientSymptoms.reduce((score, symptom, i) => score + symptom * medicationWeights[i], 0);
 }
 
 // Function to normalize values
@@ -113,29 +98,37 @@ function calculateFinalScore(normalizedCompatibility, normalizedPrice, weightCom
   return (normalizedCompatibility * weightCompatibility) + (normalizedPrice * weightPrice);
 }
 
+// Function to calculate the distance between two symptom vectors
+function calculateDistance(vector1, vector2) {
+  return Math.sqrt(vector1.reduce((sum, val, i) => sum + Math.pow(val - vector2[i], 2), 0));
+}
+
 // Main function to recommend medication
 function recommendMedication(patientData) {
   const { priorities, dateOfBirth } = patientData;
   const age = calculateAge(dateOfBirth);
   const ageGroup = determineAgeGroup(age);
 
-  // Generate a list of potential cache keys within the 5-year range
-  const cacheKeys = [];
-  for (let i = -5; i <= 5; i++) {
-    const adjustedAge = age + i;
-    const key = generateCacheKey(priorities, adjustedAge);
-    cacheKeys.push(key);
+  // Level 1 Caching: Check for exact match
+  const cacheKey = generateCacheKey(priorities, age);
+  const exactCachedResult = myCache.get(cacheKey);
+  if (exactCachedResult) {
+    console.log(`Using exact cached result for key: ${cacheKey}`);
+    return exactCachedResult.result;
   }
 
-  // Check for existing cached result within the age range
-  for (const key of cacheKeys) {
-    const cachedResult = myCache.get(key);
-    if (cachedResult) {
-      return cachedResult;
+  // Level 2 Caching: Check for existing cached result within the symptom vector distance range
+  const cacheEntries = myCache.keys();
+  for (const key of cacheEntries) {
+    const cachedData = myCache.get(key);
+    const distance = calculateDistance(priorities, cachedData.priorities);
+    if (distance <= 3) {
+      console.log(`Using cached result with distance <= 3 for key: ${key}`);
+      return cachedData.result;
     }
   }
 
-  const cacheKey = generateCacheKey(priorities, age);
+  console.log(`Running algorithm for key: ${cacheKey}`);
 
   // Scale patient symptoms
   const scaledSymptoms = scaleSymptoms(priorities, ageGroup);
@@ -164,6 +157,15 @@ function recommendMedication(patientData) {
     return { medication, compatibility };
   });
 
+  // Level 3 Caching: Check for compatibility score similarity
+  for (const key of cacheEntries) {
+    const cachedData = myCache.get(key);
+    if (Math.abs(cachedData.maxCompatibility - maxCompatibility) <= 100) {
+      console.log(`Using cached compatibility score for key: ${key}`);
+      return cachedData.result;
+    }
+  }
+
   // Calculate final scores for each medication
   compatibilityScores.forEach(({ medication, compatibility }) => {
     const price = medicationPrices[medication];
@@ -184,7 +186,7 @@ function recommendMedication(patientData) {
   };
 
   // Cache the result
-  myCache.set(cacheKey, result);
+  myCache.set(cacheKey, { priorities, result, maxCompatibility });
   return result;
 }
 
