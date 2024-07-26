@@ -6,6 +6,7 @@ import CovidNigeria from './CovidNigeria'
 import CovidWorldwide from './CovidWorldWide'
 import CovidHistory from './CovidHistory'
 import HeroSection from '../HeroSection'
+import Footer from '../Footer/Footer'
 
 export default function Discover() {
   return (
@@ -47,9 +48,7 @@ export default function Discover() {
                 </div>
             </section>
 
-            <footer>
-                <p>Developed by Synchronize</p>
-            </footer>
+            <Footer/>
         </main>
     </>
   )

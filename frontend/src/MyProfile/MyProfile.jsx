@@ -8,6 +8,7 @@ import ApptModal from './ApptModal'
 import ApptCard from './ApptCard'
 import api from '../api';
 import HeroSection from '../HeroSection'
+import Footer from '../Footer/Footer'
 
 export default function MyProfile() {
   const {user, updateUser} = useContext(UserContext)
@@ -147,9 +148,7 @@ export default function MyProfile() {
 
       </main>
 
-      <footer>
-        <p>Developed by Synchronize</p>
-      </footer>
+      <Footer/>
     </>
   )
 }
