@@ -6,6 +6,7 @@ import { WebSocketContext } from '../contexts/WebSocketContext';
 import api from '../api';
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../UserContext';
+import HeroSection from '../HeroSection';
 
 export default function Notifications() {
     const { updatedNotification, notification } = useContext(WebSocketContext);
@@ -72,14 +73,7 @@ export default function Notifications() {
         <>
             <Navbar/>
             <main>
-                <section className="myprofilehero">
-                    <video className="video-background" autoPlay loop muted>
-                        <source src="https://res.cloudinary.com/dvbfkbehg/video/upload/v1721619091/hero_wrg6v9.mov" type="video/mp4" />
-                    </video>
-                    <div className="hero-content">
-                        <h1>Notifications</h1>
-                    </div>
-                </section>
+                <HeroSection title="Notifications" />
                 <section className='notification-list'>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (

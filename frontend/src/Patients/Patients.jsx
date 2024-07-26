@@ -5,6 +5,7 @@ import {UserContext} from '../UserContext'
 import PatientCard from './PatientCard'
 import PatientProfileModal from './PatientProfileModal'
 import api from '../api'
+import HeroSection from '../HeroSection'
 
 export default function Patients() {
   const {user} = useContext(UserContext)
@@ -40,14 +41,7 @@ export default function Patients() {
         <Navbar />
 
         <main>
-            <section className="myprofilehero">
-                <video className="video-background" autoPlay loop muted>
-                    <source src="https://res.cloudinary.com/dvbfkbehg/video/upload/v1721619091/hero_wrg6v9.mov" type="video/mp4" />
-                </video>
-                <div className="hero-content">
-                    <h1>HEY DR. {user.username}!</h1>
-                </div>
-            </section>
+            <HeroSection title={`HEY DR. ${user.username}!`} />
 
             <section className='patientlist'>
 

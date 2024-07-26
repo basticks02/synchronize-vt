@@ -7,6 +7,7 @@ import ProfileModal from './ProfileModal'
 import ApptModal from './ApptModal'
 import ApptCard from './ApptCard'
 import api from '../api';
+import HeroSection from '../HeroSection'
 
 export default function MyProfile() {
   const {user, updateUser} = useContext(UserContext)
@@ -106,14 +107,7 @@ export default function MyProfile() {
       <Navbar/>
 
       <main>
-        <section className="myprofilehero">
-            <video className="video-background" autoPlay loop muted>
-              <source src="https://res.cloudinary.com/dvbfkbehg/video/upload/v1721619091/hero_wrg6v9.mov" type="video/mp4" />
-            </video>
-            <div className="hero-content">
-              {user ? <h1>Hey {user.username} !</h1>: ''}
-            </div>
-        </section>
+        <HeroSection title={`HEY ${user.username}!`} />
 
         <section className='myinfo'>
           {patient ? <ProfileCard patient={patient} setPatient={setPatient}/> : <div></div>}

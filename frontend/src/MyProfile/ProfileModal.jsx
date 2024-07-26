@@ -97,7 +97,6 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
       formData.append('image', image);
       handleSubmitPatientInfo(e, formData);
     } else {
-      // If there's no image, use the payload object as before
       handleSubmitPatientInfo(e, payload);
     }
   };
