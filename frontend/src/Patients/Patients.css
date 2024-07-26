@@ -8,6 +8,29 @@
     text-transform: uppercase;
 }
 
+.PatientSearch{
+    text-align: center;
+    margin: 20px 0;
+}
+
+.PatientSearch input{
+    margin: 0;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    width: 80%;
+    max-width: 1000px;
+    transition: all 0.5s ease;
+}
+
+.PatientSearch input:hover{
+    background-color: #e6e9eb;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.fa-magnifying-glass{
+    margin-right: 10px;
+}
+
 .patientlist{
     box-shadow: 4px 5px 15px rgba(0, 0, 0, 0.3);
     max-width: 90%;
