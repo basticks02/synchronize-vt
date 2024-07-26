@@ -113,7 +113,6 @@ function recommendMedication(patientData) {
   const cacheKey = generateCacheKey(priorities, age);
   const exactCachedResult = myCache.get(cacheKey);
   if (exactCachedResult) {
-    console.log(`Using exact cached result for key: ${cacheKey}`);
     return exactCachedResult.result;
   }
 
@@ -122,13 +121,11 @@ function recommendMedication(patientData) {
   for (const key of cacheEntries) {
     const cachedData = myCache.get(key);
     const distance = calculateDistance(priorities, cachedData.priorities);
-    if (distance <= 3) {
-      console.log(`Using cached result with distance <= 3 for key: ${key}`);
+    const level_2_threshold = 3
+    if (distance <= level_2_threshold) {
       return cachedData.result;
     }
   }
-
-  console.log(`Running algorithm for key: ${cacheKey}`);
 
   // Scale patient symptoms
   const scaledSymptoms = scaleSymptoms(priorities, ageGroup);
@@ -160,8 +157,8 @@ function recommendMedication(patientData) {
   // Level 3 Caching: Check for compatibility score similarity
   for (const key of cacheEntries) {
     const cachedData = myCache.get(key);
-    if (Math.abs(cachedData.maxCompatibility - maxCompatibility) <= 100) {
-      console.log(`Using cached compatibility score for key: ${key}`);
+    const level_3_threshold = 100
+    if (Math.abs(cachedData.maxCompatibility - maxCompatibility) <= level_3_threshold) {
       return cachedData.result;
     }
   }
