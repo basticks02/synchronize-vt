@@ -213,7 +213,7 @@ router.post('/logout', (req, res) => {
 });
 
 //Creating Patient Profile
-router.post('/myprofile', authenticateToken, async (req, res) => {
+router.post('/myprofile', authenticateToken, upload.single('image'), async (req, res) => {
   const { firstname, lastname, place_of_birth, date_of_birth, sex, height, weight, occupation, address, phone, symptoms } = req.body;
 
   try {
@@ -234,24 +234,30 @@ router.post('/myprofile', authenticateToken, async (req, res) => {
     }
 
     const parsedSymptoms = symptoms ? JSON.parse(symptoms) : [];
+    const newPatientData = {
+      firstname,
+      lastname,
+      place_of_birth,
+      date_of_birth: new Date(date_of_birth),
+      sex,
+      height: parseInt(height, 10),
+      weight: parseInt(weight, 10),
+      occupation,
+      address,
+      phone,
+      symptoms: parsedSymptoms,
+      userId: req.user.id,
+      physicianId: physician.id,
+      notificationsOn: true
+    }
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      newPatientData.profileImage = result.secure_url;
+    }
 
     const newPatient = await prisma.patient.create({
-      data: {
-        firstname,
-        lastname,
-        place_of_birth,
-        date_of_birth: new Date(date_of_birth),
-        sex,
-        height: parseInt(height, 10),
-        weight: parseInt(weight, 10),
-        occupation,
-        address,
-        phone,
-        symptoms: parsedSymptoms,
-        userId: req.user.id,
-        physicianId: physician.id,
-        notificationsOn: true
-      }
+      data: newPatientData
     });
 
     // Create a new notification for the physician
