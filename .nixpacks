@@ -1,7 +1,11 @@
 {
-  "phases": {
-    "install": "cd backend && npm install",
-    "start": "cd backend && node index.js"
-  },
-  "language": "nodejs"
-}
+    "phases": {
+      "install": "cd backend && npm install",
+      "start": "cd backend && node index.js"
+    },
+    "language": "nodejs",
+    "plan": {
+      "exclude": ["frontend", ".DS_Store"]
+    }
+  }
+  
