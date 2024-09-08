@@ -1,0 +1,7 @@
+{
+  "phases": {
+    "install": "cd backend && npm install",
+    "start": "cd backend && node index.js"
+  },
+  "language": "nodejs"
+}
