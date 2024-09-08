@@ -4,7 +4,5 @@
     "start": "node index.js"
   },
   "language": "nodejs",
-  "engines": {
-    "node": "18.x"
-  }
+  "dockerfile": "./Dockerfile"
 }
