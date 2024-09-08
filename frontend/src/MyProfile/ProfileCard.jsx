@@ -133,6 +133,9 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
             <i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i>
             {menuOpen && (
               <ul className='menu'>
+                <li className='appearance'>
+                  <i class="fa-regular fa-eye"></i> <p>Appearance</p>
+                </li>
                 <li className='notifications-patient' onClick={toggleNotifications}>
                   <i className={`fa-regular ${notificationsOn ? 'fa-bell' : 'fa-bell-slash'}`}></i>
                 </li>

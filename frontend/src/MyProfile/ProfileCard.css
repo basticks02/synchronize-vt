@@ -111,6 +111,7 @@
   color: rgb(190, 6, 6);
 }
 
+
   @media (max-width: 600px) {
     .card-container{
         flex-direction: column;
