@@ -3,5 +3,8 @@
     "install": "npm install",
     "start": "node index.js"
   },
-  "language": "nodejs"
+  "language": "nodejs",
+  "engines": {
+    "node": "18.x"
+  }
 }
