@@ -1,0 +1,7 @@
+{
+  "phases": {
+    "install": "npm install",
+    "start": "node index.js"
+  },
+  "language": "nodejs"
+}
