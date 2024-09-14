@@ -69,13 +69,19 @@ export default function PatientProfileModal({ isOpen, onClose, patientId }) {
     }
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      onClose();
+    }
+  };
+
   const currentAppointments = appointments.filter(appointment => new Date(appointment.date) >= new Date());
   const pastAppointments = appointments.filter(appointment => new Date(appointment.date) < new Date());
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="patient-modal-content">
         <span className="close" onClick={onClose}>&times;</span>
         {patient && (

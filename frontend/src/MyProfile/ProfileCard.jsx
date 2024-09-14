@@ -128,7 +128,7 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
           <p>Best Medication Including Price Factor: {recommendations.bestMedicationFinal}</p>
         </div>
 
-        {patient.qrCode && (
+        {user.role === 'patient' && patient.qrCode && (
           <div className="qr-code">
             <img src={patient.qrCode} alt="Patient QR Code" />
           </div>

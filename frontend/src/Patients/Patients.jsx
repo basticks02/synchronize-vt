@@ -1,6 +1,7 @@
 import './Patients.css'
 import Navbar from '../Navbar/Navbar'
 import React, {useState, useEffect, useContext} from 'react'
+import { Html5Qrcode } from "html5-qrcode";
 import {UserContext} from '../UserContext'
 import PatientCard from './PatientCard'
 import PatientProfileModal from './PatientProfileModal'
@@ -15,7 +16,9 @@ export default function Patients() {
   const [selectedPatientId, setSelectedPatientId] = useState(null)
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isScannerOpen, setScannerOpen] = useState(false);
 
+  let html5QrCode; 
   //fetching all patients from the DB & necessary filtering
   useEffect(() => {
     const fetchPatients = async () => {
@@ -47,6 +50,50 @@ export default function Patients() {
     setProfileModalOpen(true);
   };
 
+   // Handle QR code scan toggle
+   const handleScan = () => {
+    if (!isScannerOpen) {
+      setScannerOpen(true);  // Open the scanner
+    } else {
+      handleCloseScanner();  // Close the scanner if it's already open
+    }
+  };
+
+  // Initialize the QR code scanner when scanner is open
+  useEffect(() => {
+    if (isScannerOpen) {
+      html5QrCode = new Html5Qrcode("reader");  // Create the QR code scanner instance
+      html5QrCode.start(
+        { facingMode: "environment" },  // Start the camera
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          const patientId = decodedText.split('/').pop();  // Extract the patientId from the decoded text
+          setSelectedPatientId(patientId);
+          setProfileModalOpen(true);
+          handleCloseScanner();  // Close the scanner after scanning
+        },
+        (errorMessage) => {
+          console.error("QR scan failed: ", errorMessage);
+        }
+      );
+    }
+
+    // Cleanup when the scanner is closed
+    return () => {
+      if (html5QrCode && isScannerOpen) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();  // Clear the camera stream and scanner
+        }).catch((err) => {
+          console.error("Failed to close QR scanner", err);
+        });
+      }
+    };
+  }, [isScannerOpen]);
+
+  // Handle QR code scanner close
+  const handleCloseScanner = () => {
+    setScannerOpen(false);  // Set scanner state to closed
+  };
   return (
     <>
         <Navbar />
@@ -63,9 +110,11 @@ export default function Patients() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               
-              <i className="fa-solid fa-qrcode"></i>
+              <i className="fa-solid fa-qrcode" onClick={handleScan}></i>
               
             </div>
+
+            {isScannerOpen && <div id="reader" style={{ width: "100%", height: "100%", marginTop: "20px" }}></div>}
 
             <section className='patientlist'>
               <div className='patientHeadline'>

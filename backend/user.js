@@ -724,4 +724,28 @@ router.get('/patients/:id/appointments', authenticateToken, async (req, res) => 
   }
 });
 
+
+// Function to update QR codes for existing patients
+const updatePatientsWithQRCode = async () => {
+  try {
+    const patientsWithoutQR = await prisma.patient.findMany({
+      where: { qrCode: null }  // Find patients without QR codes
+    });
+
+    for (let patient of patientsWithoutQR) {
+      const qrCode = await generateQRCode(patient.id);
+      await prisma.patient.update({
+        where: { id: patient.id },
+        data: { qrCode },
+      });
+    }
+    console.log('QR codes generated for existing patients');
+  } catch (error) {
+    console.error('Error generating QR codes for existing patients:', error);
+  }
+};
+
+// Run this function when the server starts
+updatePatientsWithQRCode();
+
 module.exports = router;
