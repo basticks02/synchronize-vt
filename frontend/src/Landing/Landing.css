@@ -217,6 +217,7 @@
 }
 
 
+
 @media (max-width: 1000px) {
   .vision-and-mission{
     flex-direction: column;
@@ -227,6 +228,18 @@
     width: 100%;
     margin-bottom: 20px;
   }
-
-  
+.contact{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .physician-brief{
+    width: 100%;
+    justify-content: center;
+  }
+  .contact-info{
+    width: 100%;
+    text-align: center;
+  }
 }
+

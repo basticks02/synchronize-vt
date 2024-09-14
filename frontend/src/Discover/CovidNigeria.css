@@ -17,3 +17,16 @@
     align-items: center;
     height: 350px;
   }
+@media(max-width: 1000px){
+.covid-container{
+    gap: 10px;
+}
+.covid-usa-complete{
+    flex-direction: column-reverse;
+    justify-content: center;
+    /*  */
+}
+.covid-usa-graph{
+    width: 100%;
+    height: 100%;
+}
