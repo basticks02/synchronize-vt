@@ -22,7 +22,6 @@ Refer to the [Project Plan](https://docs.google.com/document/d/1qVpVUWfpK19PLDRc
 ### Technical Challenge #1 - Patient+Physician Notification System
 - **Problem:** Notifying stakeholders about updates to patient profiles and appointments.
 - **Solution:** Use websockets to send real-time notifications for changes. Created an algorithm in the backend to enhance notifications. This includes handling cases where users are offline or have turned off notifications.
-- **On this PR:** Revisit notifications by implementing a confirmation modal for turning off notifications for patients (on the physician's end), rendered based on certain conditions:
   - If a patient:
     - is an elder/infant
     - has appointments in the next 3 days
