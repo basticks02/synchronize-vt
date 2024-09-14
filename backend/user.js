@@ -9,7 +9,7 @@ const _ = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-
+const QRCode = require('qrcode');
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -21,6 +21,13 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+const generateQRCode = async (patientId) => {
+  const baseUrl = process.env.BASE_URL || 'http://localhost:5173'; 
+  const url = `${baseUrl}/patient/${patientId}`;  
+  const qrCodeData = await QRCode.toDataURL(url);
+  return qrCodeData;  
+};
 
 
 //Middleware
@@ -248,7 +255,8 @@ router.post('/myprofile', authenticateToken, upload.single('image'), async (req,
       symptoms: parsedSymptoms,
       userId: req.user.id,
       physicianId: physician.id,
-      notificationsOn: true
+      notificationsOn: true,
+      qrCode: await generateQRCode(newPatientId),
     }
 
     if (req.file) {
@@ -715,6 +723,5 @@ router.get('/patients/:id/appointments', authenticateToken, async (req, res) => 
     res.status(500).json({ error: 'Failed to fetch appointments' });
   }
 });
-
 
 module.exports = router;
