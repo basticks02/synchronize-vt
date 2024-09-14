@@ -98,7 +98,7 @@
   text-align: center;
 }
 
-.Edit:hover, .notifications-patient:hover {
+.Edit:hover, .notifications-patient:hover, .qr-patient:hover {
   background-color: #cfcfcf;
 }
 

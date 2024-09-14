@@ -136,6 +136,9 @@ export default function ProfileCard({patient, setPatient, showMenu = true}) {
                 <li className='appearance'>
                   <i class="fa-regular fa-eye"></i> <p>Appearance</p>
                 </li>
+                <li className='qr-patient'>
+                  <i className="fa-solid fa-qrcode"></i>
+                </li>
                 <li className='notifications-patient' onClick={toggleNotifications}>
                   <i className={`fa-regular ${notificationsOn ? 'fa-bell' : 'fa-bell-slash'}`}></i>
                 </li>

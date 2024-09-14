@@ -62,6 +62,9 @@ export default function Patients() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              
+              <i className="fa-solid fa-qrcode"></i>
+              
             </div>
 
             <section className='patientlist'>
