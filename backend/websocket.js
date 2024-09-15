@@ -32,6 +32,7 @@ function setupWebSocket(server) {
         ws.on('close', () => {
             delete userToWS[user.id];
             console.log('Client disconnected');
+            
         });
     });
 }
