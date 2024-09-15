@@ -21,6 +21,7 @@ export default function ConfirmModal({ patient, conditions, onConfirm, canTurnOf
 
   const handleModalClick = (e) => {
     e.stopPropagation();
+    
   };
 
   return (

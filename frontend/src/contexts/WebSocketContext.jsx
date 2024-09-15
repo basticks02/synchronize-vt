@@ -20,6 +20,7 @@ export const WebSocketProvider = ({ user, children }) => {
             setNotification(null); 
             localStorage.setItem('notifications', JSON.stringify([]));
             return;
+            
         }
 
         const token = document.cookie
