@@ -27,6 +27,7 @@ export default function CovidWorldwide() {
         <PuffLoader color={"#123abc"} loading={true} size={150} />
       </div>
     );
+    
   }
 
   const chartData = {

@@ -36,6 +36,7 @@ export default function Signup() {
         } else{
           alert("Please fill out all fields")
         }
+        
     }
 
   return (

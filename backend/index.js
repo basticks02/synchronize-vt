@@ -18,6 +18,7 @@ app.use(cookieParser());
 app.use(cors({
     origin: 'http://emms-synchronize.co',
     credentials: true,
+    
 }));
 
 // User Routes

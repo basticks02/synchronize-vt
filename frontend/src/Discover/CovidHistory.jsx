@@ -31,6 +31,7 @@ export default function CovidHistory() {
         <PuffLoader color={"#123abc"} loading={true} size={350} />
       </div>
     );
+    
   }
 
   const chartData = {

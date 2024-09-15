@@ -13,6 +13,7 @@ const checkNotificationConditions = async (patientId) => {
   const patient = await prisma.patient.findUnique({
     where: { id: patientId },
     include: { appointments: true },
+    
   });
 
   if (!patient) {

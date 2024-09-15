@@ -43,6 +43,7 @@
 @media (max-width: 1000px) {
     .covid-container{
         flex-direction: column;
+        
     }
 
     .covid-nigeria,

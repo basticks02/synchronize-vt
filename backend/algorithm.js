@@ -20,6 +20,7 @@ const medicationWeights = {
   Artemether_Lumefantrine: [5, 4, 0, 3, 1],
   Vitamin_C: [1, 2, 1, 1, 1],
   Diclofenac: [3, 0, 3, 0, 5]
+  
 };
 
 // Accessibility scores of each medicine
