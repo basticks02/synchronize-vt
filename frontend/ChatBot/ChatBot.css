@@ -1,0 +1,78 @@
+.chatbot-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
+  }
+  
+  .chatbot-toggle {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    display: block !important; /* Ensure the button is always displayed */
+  }
+  
+  .chatbot-window {
+    position: absolute !important;
+    bottom: 80px !important;
+    right: 0 !important;
+    width: 300px !important;
+    height: 400px !important;
+    background-color: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: visible !important; /* Ensure the window is visible when open */
+  }
+  
+  .chatbot-messages {
+    flex-grow: 1 !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+  }
+  
+  .message {
+    margin-bottom: 10px !important;
+    padding: 5px !important;
+    border-radius: 5px !important;
+  }
+  
+  .user {
+    background-color: #e6f2ff !important;
+    text-align: right !important;
+  }
+  
+  .assistant {
+    background-color: #f0f0f0 !important;
+  }
+  
+  .chatbot-input {
+    display: flex !important;
+    padding: 10px !important;
+    border-top: 1px solid #ddd !important;
+  }
+  
+  .chatbot-input input {
+    flex-grow: 1 !important;
+    padding: 5px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 3px !important;
+  }
+  
+  .chatbot-input button {
+    margin-left: 10px !important;
+    padding: 5px 10px !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+  }

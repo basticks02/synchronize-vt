@@ -11,6 +11,7 @@ import { UserContext } from '../UserContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import api from '../api'
 import { WebSocketProvider } from '../contexts/WebSocketContext'
+import ChatBot from '../../ChatBot/ChatBot'
 
 
 export default function App() {
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/patients" element={user ? <Patients /> : <Landing />} />
               <Route path="/notifications" element={user ? <Notifications /> : <Landing />} />
             </Routes>
+            <ChatBot/>
           </BrowserRouter>
         </UserContext.Provider>
       </WebSocketProvider>
