@@ -13,13 +13,20 @@ const app = express();
 const port = 4000;
 
 // Middleware
-app.use(express.json());
-app.use(cookieParser());
+const allowedOrigins = ['http://emms-synchronize.co', 'https://synchronize-vt-1.onrender.com'];
+
 app.use(cors({
-    origin: 'http://emms-synchronize.co',
-    credentials: true,
-    
+    origin: function (origin, callback) {
+        // Check if the origin is in the allowedOrigins array or if there's no origin (for non-browser clients)
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
 }));
+
 
 // User Routes
 app.use('/api/user', userRoutes);

@@ -32,7 +32,7 @@ export const WebSocketProvider = ({ user, children }) => {
             ws.current.close();
         }
 
-        ws.current = new WebSocket(`ws://localhost:4000?token=${token}`);
+        ws.current = new WebSocket(`wss://synchronize-vt.onrender.com/ws?token=${token}`);
 
         ws.current.onopen = () => {
             console.log('WebSocket connected');
