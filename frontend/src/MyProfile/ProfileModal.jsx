@@ -38,6 +38,7 @@ export default function ProfileModal({ isOpen, onClose, handleSubmitPatientInfo,
         symptoms: initialData.symptoms || symptomsList.map(symptom => ({ symptom, priority: 5 })),
       });
     }
+    
   }, [isOpen, initialData]);
 
   //for New Profile

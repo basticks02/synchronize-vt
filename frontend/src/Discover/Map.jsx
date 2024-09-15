@@ -36,6 +36,7 @@ export default function Map() {
     const fetchGeoJSON = async () => {
       const response = await fetch('/countries.geojson');
       return response.json();
+      
     };
 
     const fetchData = async () => {

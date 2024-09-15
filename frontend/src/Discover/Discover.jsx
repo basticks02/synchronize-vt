@@ -42,6 +42,7 @@ export default function Discover() {
 
                 <div className='covid-history'>
                     <div className='heading'>
+                        
                         <h3>Covid History</h3>
                     </div>
                     <CovidHistory/>
