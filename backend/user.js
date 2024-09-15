@@ -23,7 +23,7 @@ cloudinary.config({
 });
 
 const generateQRCode = async (patientId) => {
-  const baseUrl = process.env.BASE_URL || 'http://localhost:5173'; 
+  const baseUrl = process.env.BASE_URL || 'http://emms-synchronize.co'; 
   const url = `${baseUrl}/patient/${patientId}`;  
   const qrCodeData = await QRCode.toDataURL(url);
   return qrCodeData;  
